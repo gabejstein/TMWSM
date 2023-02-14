@@ -32,6 +32,7 @@ void CreateSentry(float x, float y)
 	e->collider.w = e->w;
 	e->collider.h = e->h;
 	e->health = 3;
+	e->tag = TAG_ENEMY;
 
 	AddEntity(e);
 	
@@ -49,6 +50,7 @@ static void RenderEnemy(Entity* self)
 
 static void EnemyHit(Entity* self, Entity* other)
 {
-	if(--self->health<=0)
-		self->isActive = 0;
+	if(other->tag==TAG_PLAYER_BULLET)
+		if(--self->health<=0)
+			self->isActive = 0;
 }

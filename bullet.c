@@ -39,7 +39,7 @@ void InitBullets(void)
 	
 }
 
-void SpawnBullet(float x, float y, float vx, float vy)
+void SpawnBullet(float x, float y, float vx, float vy, TAG tag)
 {
 	Entity* e = bulletPool[current++];
 	if (current >= MAX_BULLETS)current = 0;
@@ -50,9 +50,11 @@ void SpawnBullet(float x, float y, float vx, float vy)
 	e->vel.y = vy;
 
 	e->isActive = 1;
+	e->tag = tag;
 }
 
 static void BulletHit(Entity* self, Entity* other)
 {
 	self->isActive = 0;
+	//TODO: create some impact effects
 }

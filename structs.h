@@ -24,6 +24,7 @@ struct Entity
 	int isHit;
 	int direction;
 	int health;
+	TAG tag;
 };
 
 //Enemy Sentry

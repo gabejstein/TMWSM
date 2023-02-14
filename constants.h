@@ -18,8 +18,27 @@
 
 enum
 {
-	LEFT,
-	RIGHT
+	RIGHT,
+	LEFT
 };
+
+typedef enum
+{
+	TAG_PLAYER,
+	TAG_ENEMY,
+	TAG_DOOR,
+	TAG_KEY,
+	TAG_PLAYER_BULLET,
+	TAG_ENEMY_BULLET
+}TAG;
+
+#define MAX_KEYS 3
+
+typedef enum
+{
+	BLUE_KEY,
+	RED_KEY,
+	GREEN_KEY
+}KEY;
 
 #endif

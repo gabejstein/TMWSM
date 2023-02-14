@@ -14,7 +14,7 @@
 #include "entity.h"
 #include "player.h"
 #include "bullet.h"
-#include "sentry.h"
+
 
 extern Game game;
 

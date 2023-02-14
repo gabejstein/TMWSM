@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bullet.c" />
+    <ClCompile Include="door.c" />
     <ClCompile Include="entity.c" />
     <ClCompile Include="gamestate.c" />
     <ClCompile Include="graphics.c" />
@@ -156,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="bullet.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="door.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="gamestate.h" />
     <ClInclude Include="graphics.h" />

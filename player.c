@@ -12,14 +12,18 @@ static void PlayerOnHit(Entity* self, Entity* other);
 static void HandleCamera(void);
 static void FireGun(void);
 static void HandleTileCollisions(void);
+static void RenderHud(void);
 
 static int ammo = 100;
 static float fireRate = 500;
 static float lastFireTime = 0.0;
 
-int isGrounded = 0;
+static int isGrounded = 0;
 
-AnimatedSprite walkAnimation;
+static AnimatedSprite walkAnimation;
+
+static KEY keys[MAX_KEYS];
+SDL_Texture* keyTextures[MAX_KEYS];
 
 void CreatePlayer(float x, float y)
 {
@@ -28,8 +32,10 @@ void CreatePlayer(float x, float y)
 	player->pos.x = x;
 	player->pos.y = y;
 	player->isActive = 1;
-	player->texture = IMG_LoadTexture(game.renderer, "assets/sprites/mega_boy.png");
-	SDL_QueryTexture(player->texture, NULL, NULL, &player->w, &player->h);
+	//player->texture = IMG_LoadTexture(game.renderer, "assets/sprites/mega_boy.png");
+	//SDL_QueryTexture(player->texture, NULL, NULL, &player->w, &player->h);
+	player->w = 64;
+	player->h = 64;
 	player->collider.w = player->w;
 	player->collider.h = player->h;
 
@@ -39,6 +45,7 @@ void CreatePlayer(float x, float y)
 	player->direction = LEFT;
 
 	player->health = 4;
+	player->tag = TAG_PLAYER;
 
 	AddEntity(player);
 
@@ -50,6 +57,15 @@ void CreatePlayer(float x, float y)
 	walkAnimation.sx = 0;
 	walkAnimation.sy = 0;
 	walkAnimation.speed = 1000.0;
+
+	keys[GREEN_KEY] = 1;
+	keys[RED_KEY] = 1;
+	keys[BLUE_KEY] = 1;
+
+	keyTextures[BLUE_KEY] = IMG_LoadTexture(game.renderer, "assets/sprites/key_blue.png");
+	keyTextures[RED_KEY] = IMG_LoadTexture(game.renderer, "assets/sprites/key_red.png");
+	keyTextures[GREEN_KEY] = IMG_LoadTexture(game.renderer, "assets/sprites/key_green.png");
+	
 }
 
 static void UpdatePlayer(Entity* self)
@@ -97,23 +113,43 @@ static void RenderPlayer(void)
 {
 	Vec2 screenPos = { player->pos.x - game.camera.x,player->pos.y - game.camera.y };
 	//BlitTexture(player->texture, screenPos.x, screenPos.y);
-	SDL_RendererFlip flip = player->direction == LEFT ? 1 : 0;
+	SDL_RendererFlip flip = player->direction == RIGHT ? 0 : 1;
 	if(player->vel.x !=0 && isGrounded)
-		PlayAnimatedSprite(&walkAnimation, screenPos.x, screenPos.y, flip,2);
+		PlayAnimatedSprite(&walkAnimation, screenPos.x, screenPos.y, flip,1);
 	else
 		PlayAnimatedSprite(&walkAnimation, screenPos.x, screenPos.y, flip, 0);
 
+	RenderHud();
+}
+
+static void RenderHud(void)
+{
+	Vec2 keyPos = { 200,64 };
+	int i;
+	for (i = 0; i < MAX_KEYS; i++)
+	{
+		if(keys[i])
+			BlitTexture(keyTextures[i], keyPos.x + (i* 64), keyPos.y);
+	}
+	/*
 	char ammoDisplay[50];
 	sprintf(ammoDisplay, "Ammo: %d", ammo);
 	DrawText(50, 40, ammoDisplay);
 	char healthDisplay[50];
 	sprintf(healthDisplay, "Health: %d", player->health);
-	DrawText(480, 40, healthDisplay);
+	DrawText(480, 40, healthDisplay);*/
 }
 
 static void PlayerOnHit(Entity* self, Entity* other)
 {
+	//TODO: separate into its own function and create a damage delay.
+
+	if (other->tag == TAG_ENEMY)
+		self->health--;
+
 	
+	if (self->health <= 0)
+		self->isActive = 0;
 }
 
 static void FireGun(void)
@@ -137,7 +173,7 @@ static void FireGun(void)
 		bulletPos.y = player->pos.y;
 		bulletVel.y = 0;
 
-	SpawnBullet(bulletPos.x,bulletPos.y, bulletVel.x,bulletVel.y);
+	SpawnBullet(bulletPos.x,bulletPos.y, bulletVel.x,bulletVel.y,TAG_PLAYER_BULLET);
 
 	ammo--;
 }
@@ -231,4 +267,16 @@ static void HandleTileCollisions(void)
 	}
 
 	
+}
+
+//TODO: Separate removing the key into its own function
+int HasKey(int keyColor)
+{
+	if (keys[keyColor])
+	{
+		keys[keyColor] = 0;
+		return 1;
+	}
+
+	return 0;
 }
