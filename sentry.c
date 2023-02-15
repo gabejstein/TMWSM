@@ -33,6 +33,7 @@ void CreateSentry(float x, float y)
 	e->collider.h = e->h;
 	e->health = 3;
 	e->tag = TAG_ENEMY;
+	e->weightless = 0;
 
 	AddEntity(e);
 	
@@ -40,7 +41,7 @@ void CreateSentry(float x, float y)
 
 static void UpdateEnemy(Entity* self)
 {
-	self->pos.x -= 50.0 * game.deltaTime;
+	self->vel.x = -50.0;
 }
 
 static void RenderEnemy(Entity* self)

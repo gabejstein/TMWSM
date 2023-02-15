@@ -11,19 +11,18 @@ static void RenderPlayer(void);
 static void PlayerOnHit(Entity* self, Entity* other);
 static void HandleCamera(void);
 static void FireGun(void);
-static void HandleTileCollisions(void);
 static void RenderHud(void);
 
 static int ammo = 100;
 static float fireRate = 500;
 static float lastFireTime = 0.0;
 
-static int isGrounded = 0;
-
 static AnimatedSprite walkAnimation;
 
 static KEY keys[MAX_KEYS];
 SDL_Texture* keyTextures[MAX_KEYS];
+
+Vec2 startPos;
 
 void CreatePlayer(float x, float y)
 {
@@ -31,6 +30,7 @@ void CreatePlayer(float x, float y)
 	memset(player, '0', sizeof(Entity));
 	player->pos.x = x;
 	player->pos.y = y;
+	startPos = player->pos;
 	player->isActive = 1;
 	//player->texture = IMG_LoadTexture(game.renderer, "assets/sprites/mega_boy.png");
 	//SDL_QueryTexture(player->texture, NULL, NULL, &player->w, &player->h);
@@ -46,6 +46,7 @@ void CreatePlayer(float x, float y)
 
 	player->health = 4;
 	player->tag = TAG_PLAYER;
+	player->weightless = 0;
 
 	AddEntity(player);
 
@@ -81,15 +82,15 @@ static void UpdatePlayer(Entity* self)
 		player->vel.x += playerSpeed;
 	}
 
-	player->vel.y += 8.0;
 
-	if (game.input.keys[SDL_SCANCODE_J] && isGrounded)
+	if (game.input.keys[SDL_SCANCODE_J] && player->isGrounded)
 	{
 		player->vel.y -= 450.0;
-		isGrounded = 0;
+		player->isGrounded = 0;
 	}
 
-	HandleTileCollisions();
+	if (game.input.keys[SDL_SCANCODE_R])
+		player->pos = startPos;
 
 	if (player->vel.x < 0)
 		player->direction = LEFT;
@@ -114,7 +115,7 @@ static void RenderPlayer(void)
 	Vec2 screenPos = { player->pos.x - game.camera.x,player->pos.y - game.camera.y };
 	//BlitTexture(player->texture, screenPos.x, screenPos.y);
 	SDL_RendererFlip flip = player->direction == RIGHT ? 0 : 1;
-	if(player->vel.x !=0 && isGrounded)
+	if(player->vel.x !=0 && player->isGrounded)
 		PlayAnimatedSprite(&walkAnimation, screenPos.x, screenPos.y, flip,1);
 	else
 		PlayAnimatedSprite(&walkAnimation, screenPos.x, screenPos.y, flip, 0);
@@ -204,70 +205,7 @@ static void HandleCamera(void)
 	}
 }
 
-static void HandleTileCollisions(void)
-{
-	if (player->vel.x != 0)
-	{
-		if (player->vel.x < 0)
-		{
-			if (GetTile((int)player->pos.x / TILE_SIZE, (int)player->pos.y / TILE_SIZE, 1) == 1)
-			{
-				player->pos.x = (int)player->pos.x;
-				player->vel.x = 0.0;
-			}
-		}
-		else if (player->vel.x > 0)
-		{
-			if (GetTile((int)player->pos.x + player->w / TILE_SIZE, (int)player->pos.y / TILE_SIZE, 1) == 1)
-			{
-				//player->pos.x = (int)(player->pos.x - player->w);
-				//player->vel.x = 0.0;
-			}
-		}
-	}
 
-	if (player->vel.y != 0)
-	{
-		Vec2 leftCorner = { player->pos.x,player->pos.y + player->h };
-		Vec2 rightCorner = { player->pos.x + player->w, player->pos.y + player->h };
-		if (player->vel.y > 0)
-		{
-			//check left corner
-			if (GetTile((int)leftCorner.x / TILE_SIZE, (int)leftCorner.y / TILE_SIZE,1) == 1)
-			{
-				player->pos.y = (int)leftCorner.y-player->h;
-				player->vel.y = 0.0;
-				isGrounded = 1;
-			}
-
-			//check right corner
-			if (GetTile((int)rightCorner.x / TILE_SIZE, (int)rightCorner.y / TILE_SIZE, 1) == 1)
-			{
-				player->pos.y = (int)leftCorner.y - player->h;
-				player->vel.y = 0.0;
-				isGrounded = 1;
-			}
-		}
-		else if (player->vel.y < 0)
-		{
-			//check left corner
-			if (GetTile((int)player->pos.x / TILE_SIZE, (int)player->pos.y / TILE_SIZE, 1) == 1)
-			{
-				player->pos.y = (int)player->pos.y;
-				player->vel.y = 0.0;
-			}
-
-			if (GetTile((int)player->pos.x+player->w / TILE_SIZE, (int)player->pos.y / TILE_SIZE, 1) == 1)
-			{
-				player->pos.y = (int)player->pos.y;
-				player->vel.y = 0.0;
-			}
-		}
-		
-	}
-
-	
-}
 
 //TODO: Separate removing the key into its own function
 int HasKey(int keyColor)

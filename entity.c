@@ -1,12 +1,16 @@
 #include "entity.h"
 #include <stdio.h>
+#include "map.h"
 
 Entity** entities;
 
-int currentEntity;
+int currentEntity; //The top of the entity stack.
 
 static void debugRender(Entity* e);
 static int RectCollision(int ax, int ay, int aw, int ah, int bx, int by, int bw, int bh);
+static void HandleTileCollisions(Entity* e);
+
+static float gravity = 8.0;
 
 void InitEntities(void)
 {
@@ -29,8 +33,11 @@ void UpdateEntities(void)
 			{
 				e->update(e);
 			}
-			e->pos.x += e->vel.x * game.deltaTime;
-			e->pos.y += e->vel.y * game.deltaTime;
+
+			if(e->weightless==0)
+				e->vel.y += gravity;
+
+			HandleTileCollisions(e);
 
 			//update collider
 			e->collider.x = e->pos.x;
@@ -137,4 +144,63 @@ static int RectCollision(int ax, int ay, int aw, int ah, int bx, int by, int bw,
 		return 1;
 
 	return 0;
+}
+
+static void HandleTileCollisions(Entity* e)
+{
+	Vec2 tempPos = { e->pos.x + e->vel.x*game.deltaTime, e->pos.y };
+	int mx, my;
+
+	my = tempPos.y / TILE_SIZE;
+
+	if (e->vel.x > 0)
+	{
+		mx = (tempPos.x + e->w)/TILE_SIZE;
+		
+
+		if (GetTile(mx, my, 1) == 1)
+		{
+			tempPos.x = (mx * TILE_SIZE) - e->w;
+			e->vel.x = 0.0;
+		}
+	}
+	else if (e->vel.x < 0)
+	{
+		mx = tempPos.x / TILE_SIZE;
+
+
+		if (GetTile(mx, my, 1) == 1)
+		{
+			tempPos.x = (mx * TILE_SIZE) + TILE_SIZE;
+			e->vel.x = 0.0;
+		}
+	}
+
+	tempPos.y = e->pos.y + e->vel.y * game.deltaTime;
+	mx = tempPos.x / TILE_SIZE;
+
+	if (e->vel.y > 0)
+	{
+		my = (tempPos.y + e->h) / TILE_SIZE;
+
+		if (GetTile(mx, my,1) == 1)
+		{
+			tempPos.y = my * TILE_SIZE - e->h;
+			e->vel.y = 0.0;
+			e->isGrounded = 1;
+		}
+	}
+	else if (e->vel.y < 0)
+	{
+		my = tempPos.y / TILE_SIZE;
+
+		if (GetTile(mx, my,1) == 1)
+		{
+			tempPos.y = my * TILE_SIZE + TILE_SIZE;
+			e->vel.y = 0.0;
+		}
+	}
+
+	e->pos.x = tempPos.x;
+	e->pos.y = tempPos.y;
 }

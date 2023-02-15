@@ -25,6 +25,8 @@ struct Entity
 	int direction;
 	int health;
 	TAG tag;
+	int isGrounded;
+	int weightless;
 };
 
 //Enemy Sentry

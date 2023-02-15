@@ -31,6 +31,7 @@ void InitBullets(void)
 		e->onHit = BulletHit;
 		e->render = NULL;
 		e->isActive = 0;
+		e->weightless = 1;
 
 		bulletPool[i] = e;
 

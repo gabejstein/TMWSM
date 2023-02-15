@@ -18,6 +18,7 @@ void CreateDoor(float x, float y)
 	SDL_QueryTexture(door->texture, NULL, NULL, &door->w, &door->h);
 	door->collider.w = door->w;
 	door->collider.h = door->h;
+	door->weightless = 0;
 	printf("Door initialized at %f %f\n", x, y);
 	AddEntity(door);
 }
