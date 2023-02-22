@@ -1,12 +1,15 @@
 #include "sentry.h"
 
 #include "main.h"
+#include "map.h"
 
 static void UpdateEnemy(Entity* self);
 static void RenderEnemy(Entity* self);
 static void EnemyHit(Entity* self, Entity* other);
 
-SDL_Texture* sentryTexture;
+static SDL_Texture* sentryTexture;
+
+static float sentrySpeed = 300.0;
 
 void InitSentry(void)
 {
@@ -15,7 +18,7 @@ void InitSentry(void)
 
 void CreateSentry(float x, float y)
 {
-	
+
 	Entity* e = (Entity*)malloc(sizeof(Entity));
 	memset(e, '0', sizeof(Entity));
 
@@ -34,14 +37,37 @@ void CreateSentry(float x, float y)
 	e->health = 3;
 	e->tag = TAG_ENEMY;
 	e->weightless = 0;
+	e->direction = LEFT;
 
 	AddEntity(e);
-	
+
 }
 
 static void UpdateEnemy(Entity* self)
 {
-	self->vel.x = -50.0;
+	if (self->direction == LEFT)
+		self->vel.x = -sentrySpeed;
+	else
+		self->vel.x = sentrySpeed;
+
+	//Turn enemies around if they hit a wall or ledge.
+	int mx, my;
+	mx = self->direction == LEFT ? self->pos.x-1 : self->pos.x + self->w;
+	mx /= TILE_SIZE;
+	my = self->pos.y;
+	my /= TILE_SIZE;
+	if (GetTile(mx, my, 1) == 1)
+	{
+		self->direction = self->direction == LEFT ? RIGHT : LEFT;
+	}
+
+	my = self->pos.y + self->h;
+	my /= TILE_SIZE;
+	if (GetTile(mx, my, 1) == -1)
+	{
+		self->direction = self->direction == LEFT ? RIGHT : LEFT;
+	}
+
 }
 
 static void RenderEnemy(Entity* self)

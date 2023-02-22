@@ -1,5 +1,4 @@
 #include "player.h"
-#include "main.h"
 #include <stdio.h>
 #include "map.h"
 
@@ -23,6 +22,10 @@ static KEY keys[MAX_KEYS];
 SDL_Texture* keyTextures[MAX_KEYS];
 
 Vec2 startPos;
+
+static float lastDamagedTime;
+static float damagePeriod = 1000;
+static int isDamageBlink;
 
 void CreatePlayer(float x, float y)
 {
@@ -72,14 +75,17 @@ void CreatePlayer(float x, float y)
 static void UpdatePlayer(Entity* self)
 {
 	player->vel.x = 0.0;
+	walkAnimation.speed = 0;
 
 	if (game.input.keys[SDL_SCANCODE_A])
 	{
 		player->vel.x -= playerSpeed;
+		walkAnimation.speed = 1;
 	}
 	else if (game.input.keys[SDL_SCANCODE_D])
 	{
 		player->vel.x += playerSpeed;
+		walkAnimation.speed = 1;
 	}
 
 
@@ -108,45 +114,64 @@ static void UpdatePlayer(Entity* self)
 
 	HandleCamera();
 
+	if (isDamageBlink)
+	{
+		if (SDL_GetTicks() - lastDamagedTime > damagePeriod)
+		{
+			isDamageBlink = 0;
+		}
+	}
+
 }
 
 static void RenderPlayer(void)
 {
+	//TODO: Replace this with a proper blink
+	if (isDamageBlink && ((SDL_GetTicks()/100) % 2) == 0)return;
+
 	Vec2 screenPos = { player->pos.x - game.camera.x,player->pos.y - game.camera.y };
 	//BlitTexture(player->texture, screenPos.x, screenPos.y);
 	SDL_RendererFlip flip = player->direction == RIGHT ? 0 : 1;
-	if(player->vel.x !=0 && player->isGrounded)
-		PlayAnimatedSprite(&walkAnimation, screenPos.x, screenPos.y, flip,1);
-	else
-		PlayAnimatedSprite(&walkAnimation, screenPos.x, screenPos.y, flip, 0);
+	if (!player->isGrounded)
+		walkAnimation.speed = 0;
+	
+	
+	PlayAnimatedSprite(&walkAnimation, screenPos.x, screenPos.y, flip);
+	
 
 	RenderHud();
 }
 
 static void RenderHud(void)
 {
-	Vec2 keyPos = { 200,64 };
+	Vec2 keyPos = { 900,5 };
 	int i;
 	for (i = 0; i < MAX_KEYS; i++)
 	{
 		if(keys[i])
 			BlitTexture(keyTextures[i], keyPos.x + (i* 64), keyPos.y);
 	}
-	/*
+	
 	char ammoDisplay[50];
 	sprintf(ammoDisplay, "Ammo: %d", ammo);
-	DrawText(50, 40, ammoDisplay);
+	DrawText(50, 5, ammoDisplay,255,0,0);
 	char healthDisplay[50];
 	sprintf(healthDisplay, "Health: %d", player->health);
-	DrawText(480, 40, healthDisplay);*/
+	DrawText(480, 5, healthDisplay,0,0,255);
+	
 }
 
 static void PlayerOnHit(Entity* self, Entity* other)
 {
 	//TODO: separate into its own function and create a damage delay.
 
-	if (other->tag == TAG_ENEMY)
+	if (other->tag == TAG_ENEMY && !isDamageBlink)
+	{
 		self->health--;
+		lastDamagedTime = SDL_GetTicks();
+		isDamageBlink = 1;
+	}
+		
 
 	
 	if (self->health <= 0)
@@ -205,7 +230,7 @@ static void HandleCamera(void)
 	}
 }
 
-
+Entity* GetPlayer(void) { return player; }
 
 //TODO: Separate removing the key into its own function
 int HasKey(int keyColor)

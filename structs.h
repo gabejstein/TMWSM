@@ -7,6 +7,14 @@
 #define MAX_KEYBOARD 256
 
 typedef struct Entity Entity;
+typedef struct Texture Texture;
+
+struct Texture
+{
+	SDL_Texture* texture;
+	char id[256];
+	Texture* next;
+};
 
 struct Entity
 {

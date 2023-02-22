@@ -149,16 +149,29 @@ static int RectCollision(int ax, int ay, int aw, int ah, int bx, int by, int bw,
 static void HandleTileCollisions(Entity* e)
 {
 	Vec2 tempPos = { e->pos.x + e->vel.x*game.deltaTime, e->pos.y };
-	int mx, my;
+	int mx, my, hit;
 
-	my = tempPos.y / TILE_SIZE;
+	hit = 0;
 
 	if (e->vel.x > 0)
 	{
 		mx = (tempPos.x + e->w)/TILE_SIZE;
-		
+		my = tempPos.y / TILE_SIZE;
 
 		if (GetTile(mx, my, 1) == 1)
+		{
+			hit = 1;
+		}
+
+		//need to minus the height by 1 because of how int truncation works.
+		my = (tempPos.y + e->h-1) / TILE_SIZE;
+
+		if (GetTile(mx, my, 1) == 1)
+		{
+			hit = 1;
+		}
+
+		if (hit)
 		{
 			tempPos.x = (mx * TILE_SIZE) - e->w;
 			e->vel.x = 0.0;
@@ -167,23 +180,49 @@ static void HandleTileCollisions(Entity* e)
 	else if (e->vel.x < 0)
 	{
 		mx = tempPos.x / TILE_SIZE;
-
+		my = tempPos.y / TILE_SIZE;
 
 		if (GetTile(mx, my, 1) == 1)
+		{
+			hit = 1;
+		}
+
+		my = (tempPos.y + e->h-1) / TILE_SIZE;
+
+		if (GetTile(mx, my, 1) == 1)
+		{
+			hit = 1;
+		}
+
+		if (hit)
 		{
 			tempPos.x = (mx * TILE_SIZE) + TILE_SIZE;
 			e->vel.x = 0.0;
 		}
 	}
 
+	hit = 0;
 	tempPos.y = e->pos.y + e->vel.y * game.deltaTime;
-	mx = tempPos.x / TILE_SIZE;
+	
 
 	if (e->vel.y > 0)
 	{
+		mx = tempPos.x / TILE_SIZE;
 		my = (tempPos.y + e->h) / TILE_SIZE;
 
 		if (GetTile(mx, my,1) == 1)
+		{
+			hit = 1;
+		}
+
+		mx = (tempPos.x+e->w-1) / TILE_SIZE;
+
+		if (GetTile(mx, my, 1) == 1)
+		{
+			hit = 1;
+		}
+
+		if (hit)
 		{
 			tempPos.y = my * TILE_SIZE - e->h;
 			e->vel.y = 0.0;
@@ -192,9 +231,22 @@ static void HandleTileCollisions(Entity* e)
 	}
 	else if (e->vel.y < 0)
 	{
+		mx = tempPos.x / TILE_SIZE;
 		my = tempPos.y / TILE_SIZE;
 
 		if (GetTile(mx, my,1) == 1)
+		{
+			hit = 1;
+		}
+
+		mx = (tempPos.x + e->w-1) / TILE_SIZE;
+
+		if (GetTile(mx, my, 1) == 1)
+		{
+			hit = 1;
+		}
+
+		if (hit)
 		{
 			tempPos.y = my * TILE_SIZE + TILE_SIZE;
 			e->vel.y = 0.0;
