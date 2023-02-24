@@ -11,7 +11,7 @@ void CreateDoor(float x, float y)
 	door->pos.x = x;
 	door->pos.y = y;
 	door->isActive = 1;
-	door->texture = IMG_LoadTexture(game.renderer, "assets/sprites/Door_01.png");
+	door->texture = GetTexture("green_door");
 	door->update = NULL;
 	door->render = NULL;
 	door->onHit = OnHit;

@@ -4,17 +4,7 @@
 #include "main.h"
 #include "vector.h"
 
-#define MAX_KEYBOARD 256
-
 typedef struct Entity Entity;
-typedef struct Texture Texture;
-
-struct Texture
-{
-	SDL_Texture* texture;
-	char id[256];
-	Texture* next;
-};
 
 struct Entity
 {
@@ -35,6 +25,7 @@ struct Entity
 	TAG tag;
 	int isGrounded;
 	int weightless;
+	float lastTime;
 };
 
 //Enemy Sentry
@@ -47,13 +38,7 @@ typedef struct
 typedef struct
 {
 	int tiles[MAX_MAP_LAYERS][(MAP_WIDTH * MAP_HEIGHT)];
-	
 }Stage;
-
-typedef struct
-{
-	int keys[MAX_KEYBOARD];
-}Input;
 
 typedef struct
 {
@@ -64,7 +49,6 @@ typedef struct
 	void (*update)();
 	void (*render)();
 	void (*cleanup)();
-	Input input;
 	Vec2 camera;
 	int debug;
 }Game;

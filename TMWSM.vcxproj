@@ -144,11 +144,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bullet.c" />
+    <ClCompile Include="cutscene.c" />
     <ClCompile Include="door.c" />
     <ClCompile Include="entity.c" />
     <ClCompile Include="gamestate.c" />
     <ClCompile Include="graphics.c" />
     <ClCompile Include="hud.c" />
+    <ClCompile Include="input.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="map.c" />
     <ClCompile Include="objectfactory.c" />
@@ -158,11 +160,13 @@
   <ItemGroup>
     <ClInclude Include="bullet.h" />
     <ClInclude Include="constants.h" />
+    <ClInclude Include="cutscene.h" />
     <ClInclude Include="door.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="gamestate.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="hud.h" />
+    <ClInclude Include="input.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="objectfactory.h" />

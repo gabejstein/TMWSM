@@ -1,5 +1,67 @@
-﻿  graphics.c
-C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\graphics.c(30,8): warning C4013: 関数 'memset' は定義されていません。int 型の値を返す外部関数と見なします。
-C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\graphics.c(53,11): warning C4013: 関数 'printf' は定義されていません。int 型の値を返す外部関数と見なします。
-C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\graphics.c(78,25): warning C4013: 関数 'strlen' は定義されていません。int 型の値を返す外部関数と見なします。
+﻿  bullet.c
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\bullet.c(24,9): warning C4013: 関数 'memset' は定義されていません。int 型の値を返す外部関数と見なします。
+  cutscene.c
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\cutscene.c(62,28): warning C4047: '==': 間接参照のレベルが 'int' と 'char [2]' で異なっています。
+  door.c
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\door.c(10,8): warning C4013: 関数 'memset' は定義されていません。int 型の値を返す外部関数と見なします。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\door.c(22,8): warning C4013: 関数 'printf' は定義されていません。int 型の値を返す外部関数と見なします。
+  entity.c
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(18,8): warning C4013: 関数 'memset' は定義されていません。int 型の値を返す外部関数と見なします。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(43,26): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(44,26): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(68,37): warning C4244: '関数': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(68,61): warning C4244: '関数': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(80,29): warning C4244: '-=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(81,29): warning C4244: '-=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(125,28): warning C4244: '関数': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(125,38): warning C4244: '関数': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(125,61): warning C4244: '関数': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(125,72): warning C4244: '関数': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(170,26): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(171,18): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(179,29): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(188,33): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(194,18): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(195,18): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(202,29): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(211,33): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(222,18): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(223,27): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(230,27): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(239,31): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(246,18): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(247,18): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(254,29): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\entity.c(263,31): warning C4244: '=': 'int' から 'float' への変換です。データが失われる可能性があります。
+  gamestate.c
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\gamestate.c(20,12): warning C4013: 関数 'InitSentry' は定義されていません。int 型の値を返す外部関数と見なします。
+  graphics.c
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\graphics.c(84,25): warning C4267: '初期化中': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
+  hud.c
+  input.c
+  main.c
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\main.c(91,26): warning C4244: '=': 'Uint32' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\main.c(86,37): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+  map.c
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\map.c(15,8): warning C4013: 関数 'memset' は定義されていません。int 型の値を返す外部関数と見なします。
+  objectfactory.c
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\objectfactory.c(8,12): warning C4013: 関数 'strcmp' は定義されていません。int 型の値を返す外部関数と見なします。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\objectfactory.c(22,9): warning C4013: 関数 'printf' は定義されていません。int 型の値を返す外部関数と見なします。
+  player.c
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\player.c(33,8): warning C4013: 関数 'memset' は定義されていません。int 型の値を返す外部関数と見なします。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\player.c(109,30): warning C4244: '=': 'Uint32' から 'float' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\player.c(137,46): warning C4244: '関数': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\player.c(137,59): warning C4244: '関数': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\player.c(150,41): warning C4244: '関数': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\player.c(150,58): warning C4244: '関数': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\player.c(169,33): warning C4244: '=': 'Uint32' から 'float' への変換です。データが失われる可能性があります。
+  sentry.c
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\sentry.c(24,8): warning C4013: 関数 'memset' は定義されていません。int 型の値を返す外部関数と見なします。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\sentry.c(35,24): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\sentry.c(36,24): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\sentry.c(57,31): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\sentry.c(59,16): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\sentry.c(66,19): warning C4244: '=': 'float' から 'int' への変換です。データが失われる可能性があります。
+C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\sentry.c(115,32): warning C4244: '=': 'Uint32' から 'float' への変換です。データが失われる可能性があります。
+  コードを生成中...
   TMWSM.vcxproj -> C:\Users\Geibu\Documents\Visual Studio Projects\TMWSM\x64\Debug\TMWSM.exe

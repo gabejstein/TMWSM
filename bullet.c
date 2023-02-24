@@ -13,7 +13,7 @@ static void BulletHit(Entity* self, Entity* other);
 
 void InitBullets(void)
 {
-	bulletTexture = IMG_LoadTexture(game.renderer, "assets/sprites/bullet1.png");
+	bulletTexture = GetTexture("bullet");
 
 	current = 0;
 

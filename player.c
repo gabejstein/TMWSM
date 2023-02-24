@@ -53,7 +53,7 @@ void CreatePlayer(float x, float y)
 
 	AddEntity(player);
 
-	walkAnimation.texture = IMG_LoadTexture(game.renderer, "assets/sprites/girl_walk.png");
+	walkAnimation.texture = GetTexture("player_walk");
 	walkAnimation.width = 64;
 	walkAnimation.height = 64;
 	walkAnimation.maxFrames = 8;
@@ -66,49 +66,47 @@ void CreatePlayer(float x, float y)
 	keys[RED_KEY] = 1;
 	keys[BLUE_KEY] = 1;
 
-	keyTextures[BLUE_KEY] = IMG_LoadTexture(game.renderer, "assets/sprites/key_blue.png");
-	keyTextures[RED_KEY] = IMG_LoadTexture(game.renderer, "assets/sprites/key_red.png");
-	keyTextures[GREEN_KEY] = IMG_LoadTexture(game.renderer, "assets/sprites/key_green.png");
+	keyTextures[BLUE_KEY] = GetTexture("key_blue");
+	keyTextures[RED_KEY] = GetTexture("key_red");
+	keyTextures[GREEN_KEY] = GetTexture("key_green");
 	
 }
 
 static void UpdatePlayer(Entity* self)
 {
 	player->vel.x = 0.0;
-	walkAnimation.speed = 0;
 
-	if (game.input.keys[SDL_SCANCODE_A])
+	if (GetButton(INP_LEFT))
 	{
 		player->vel.x -= playerSpeed;
 		walkAnimation.speed = 1;
 	}
-	else if (game.input.keys[SDL_SCANCODE_D])
+	else if (GetButton(INP_RIGHT))
 	{
 		player->vel.x += playerSpeed;
 		walkAnimation.speed = 1;
 	}
 
 
-	if (game.input.keys[SDL_SCANCODE_J] && player->isGrounded)
+	if (GetButton(INP_JUMP) && player->isGrounded)
 	{
 		player->vel.y -= 450.0;
 		player->isGrounded = 0;
 	}
-
+	/*
 	if (game.input.keys[SDL_SCANCODE_R])
 		player->pos = startPos;
-
+		*/
 	if (player->vel.x < 0)
 		player->direction = LEFT;
 	else if (player->vel.x > 0)
 		player->direction = RIGHT;
 
-	if (game.input.keys[SDL_SCANCODE_SPACE] && SDL_GetTicks() - lastFireTime > fireRate)
+	if (GetButton(INP_FIRE1) && SDL_GetTicks() - lastFireTime > fireRate)
 	{
 		if(ammo>0 )
 			FireGun();
 		lastFireTime = SDL_GetTicks();
-		game.input.keys[SDL_SCANCODE_SPACE] = 0;
 	}
 		
 
@@ -165,7 +163,7 @@ static void PlayerOnHit(Entity* self, Entity* other)
 {
 	//TODO: separate into its own function and create a damage delay.
 
-	if (other->tag == TAG_ENEMY && !isDamageBlink)
+	if ((other->tag == TAG_ENEMY || other->tag==TAG_ENEMY_BULLET) && !isDamageBlink)
 	{
 		self->health--;
 		lastDamagedTime = SDL_GetTicks();
@@ -175,7 +173,12 @@ static void PlayerOnHit(Entity* self, Entity* other)
 
 	
 	if (self->health <= 0)
-		self->isActive = 0;
+	{
+		//self->isActive = 0;
+		self->pos = startPos;
+		self->health = 4;
+	}
+		
 }
 
 static void FireGun(void)

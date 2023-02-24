@@ -89,6 +89,18 @@ static void debugRender(Entity* e)
 	SDL_SetRenderDrawColor(game.renderer, 0, 0, 0, 0);
 }
 
+//A constructor for creating a base entity
+Entity* NewEntity(void)
+{
+	Entity* e = (Entity*)malloc(sizeof(Entity));
+	memset(e, 0, sizeof(Entity));
+	e->isActive = 1;
+	e->weightless = 0;
+
+	return e;
+}
+
+//Adds to the entity list
 void AddEntity(Entity* e)
 {
 	if (currentEntity >= MAX_ENTITIES)

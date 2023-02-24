@@ -38,14 +38,17 @@ static void Init_SDL(void)
 	}
 
 	game.isRunning = 1;
+	
 }
 
 static void Start(void)
 {
 	Init_SDL();
 	InitFont();
-	StartGameState();
+	LoadTextures("assets/sprite_resource.txt");
 
+	StartGameState();
+	//LoadCutscene("assets/cutscenes/cutscene01.txt");
 }
 
 static void ProcessInput(void)
@@ -59,14 +62,23 @@ static void ProcessInput(void)
 			game.isRunning = 0;
 			break;
 		case SDL_KEYDOWN:
-			game.input.keys[event.key.keysym.scancode] = 1;
+			ProcessKeyboardDown(&event);
+			UpdateInputs();
 			break;
 		case SDL_KEYUP:
-			game.input.keys[event.key.keysym.scancode] = 0;
+			ProcessKeyboardUp(&event);
+			UpdateInputs();
+			break;
+		case SDL_JOYBUTTONDOWN:
+			ProcessJoyButtonDown(&event);
+			break;
+		case SDL_JOYBUTTONUP:
+			ProcessJoyButtonUp(&event);
 			break;
 		}
 	}
 
+	
 }
 
 static void Update(void)
@@ -98,6 +110,10 @@ static void Cleanup(void)
 	printf("Cleaning up game.\n");
 	if (game.cleanup)
 		game.cleanup();
+
+	FreeAllTextures();
+
+	//SDL-related
 	TTF_Quit();
 	IMG_Quit();
 	SDL_DestroyRenderer(game.renderer);

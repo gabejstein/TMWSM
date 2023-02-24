@@ -1,12 +1,18 @@
 #include "graphics.h"
+#include <stdio.h>
+#include <string.h>
 
-#define MAX_GLYPHS 256
-#define FONT_TEXTURE_SIZE 512
-#define FONT_SIZE 50
+//Font-related stuff
 
-TTF_Font* font;
-SDL_Texture* fontTexture;
-SDL_Rect glyphs[MAX_GLYPHS];
+static TTF_Font* font;
+static SDL_Texture* fontTexture;
+static SDL_Rect glyphs[MAX_GLYPHS];
+
+//Texture-related stuff
+//Linked list to hold all textures
+static Texture* textureListHead = NULL;
+
+static void AddTexture(char* id, char* path);
 
 void BlitTexture(SDL_Texture* texture, int x, int y)
 {
@@ -113,4 +119,77 @@ void PlayAnimatedSprite(AnimatedSprite* sprite, int x, int y, SDL_RendererFlip f
 
 	if(sprite->speed > 0)
 		sprite->currentFrame = (int)(SDL_GetTicks()/100) % sprite->maxFrames;
+
+	sprite->speed = 0;
+}
+
+static void AddTexture(char* id, char* path)
+{
+	SDL_Surface* surface;
+	SDL_Texture* texture;
+	surface = IMG_Load(path);
+	texture = SDL_CreateTextureFromSurface(game.renderer, surface);
+	SDL_FreeSurface(surface);
+
+	Texture* textureObject = (Texture*)malloc(sizeof(Texture));
+	memset(textureObject, 0, sizeof(Texture));
+	strncpy(textureObject->id,id,256);
+	textureObject->texture = texture;
+	textureObject->next = NULL;
+
+	if (textureListHead == NULL)
+	{
+		textureListHead = textureObject;
+		return;
+	}
+
+	textureObject->next = textureListHead;
+	textureListHead = textureObject;
+}
+
+//Loads all the textures at once based on the resource list.
+void LoadTextures(char* resourcePath)
+{
+	char textID[256], textPath[256];
+
+	FILE* f = fopen(resourcePath, "r");
+	if (!f) { printf("Could not open sprite resource file.\n"); exit(1); }
+	do {
+		fscanf(f, "%s %s\n", textID, textPath);
+		printf("Adding texture at ID: %s and path: %s\n", textID, textPath);
+		AddTexture(textID, textPath);
+	} while (!feof(f));
+	
+	fclose(f);
+}
+
+//Pulls textures from repository.
+SDL_Texture* GetTexture(char* id)
+{
+	Texture* current;
+	for (current = textureListHead; current != NULL; current = current->next)
+	{
+		if (strcmp(id, current->id) == 0)
+		{
+			return current->texture;
+		}
+	}
+
+	printf("Could not find texture at id: %s\n", id);
+	return NULL;
+}
+
+void FreeAllTextures(void)
+{
+	printf("Freeing texture resources.\n");
+	Texture* current = textureListHead;
+	Texture* temp;
+	while (current != NULL)
+	{
+		temp = current;
+		current = current->next;
+		SDL_DestroyTexture(temp->texture);
+		free(temp);
+	}
+	printf("Texture resources freed.\n");
 }

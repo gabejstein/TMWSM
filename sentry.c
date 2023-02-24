@@ -4,6 +4,7 @@
 #include "map.h"
 
 static void UpdateEnemy(Entity* self);
+static void UpdateShooter(Entity* self);
 static void RenderEnemy(Entity* self);
 static void EnemyHit(Entity* self, Entity* other);
 
@@ -13,7 +14,7 @@ static float sentrySpeed = 300.0;
 
 void InitSentry(void)
 {
-	sentryTexture = IMG_LoadTexture(game.renderer, "assets/sprites/ninja.png");
+	sentryTexture = GetTexture("sentry");
 }
 
 void CreateSentry(float x, float y)
@@ -24,7 +25,8 @@ void CreateSentry(float x, float y)
 
 	e->pos.x = x;
 	e->pos.y = y;
-	e->update = UpdateEnemy;
+	//e->update = UpdateEnemy;
+	e->update = UpdateShooter;
 	e->render = NULL;
 	e->onHit = EnemyHit;
 	e->isActive = 1;
@@ -38,7 +40,7 @@ void CreateSentry(float x, float y)
 	e->tag = TAG_ENEMY;
 	e->weightless = 0;
 	e->direction = LEFT;
-
+	e->lastTime = 0;
 	AddEntity(e);
 
 }
@@ -68,6 +70,50 @@ static void UpdateEnemy(Entity* self)
 		self->direction = self->direction == LEFT ? RIGHT : LEFT;
 	}
 
+}
+
+//update function for specialized shooter enemies
+static void UpdateShooter(Entity* self)
+{
+	//I guess this is how inheritance is done in C
+	UpdateEnemy(self);
+
+	Vec2 bulVel = { 0,0 };
+	Vec2 bulPos = { 0,0 };
+
+	Entity* player = GetPlayer();
+	
+	if (self->direction == LEFT)
+	{
+		//If player is to the left of shooter and is within bounds and within range then fire projectile
+		if (player->pos.x < self->pos.x)
+		{
+			if (player->pos.y + player->h > self->pos.y && player->pos.y < self->pos.y + self->h)
+			{
+				bulVel.x = -500.0;
+				bulPos.x = self->pos.x - 100;
+			}
+		}
+		
+	}
+	else if (self->direction == RIGHT)
+	{
+		//If player is to the left of shooter and is within bounds and within range then fire projectile
+		if (player->pos.x > self->pos.x)
+		{
+			if (player->pos.y + player->h > self->pos.y && player->pos.y < self->pos.y + self->h)
+			{
+				bulVel.x = 500.0;
+				bulPos.x = self->pos.x + 100;
+			}
+		}
+	}
+
+	if (bulVel.x != 0 && SDL_GetTicks() - self->lastTime > 1000)
+	{
+		SpawnBullet(bulPos.x, self->pos.y, bulVel.x, bulVel.y, TAG_ENEMY_BULLET);
+		self->lastTime = SDL_GetTicks();
+	}
 }
 
 static void RenderEnemy(Entity* self)

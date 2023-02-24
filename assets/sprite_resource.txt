@@ -1,0 +1,7 @@
+player_walk assets/sprites/girl_walk.png
+bullet assets/sprites/bullet1.png
+green_door assets/sprites/Door_01.png
+key_blue assets/sprites/key_blue.png
+key_green assets/sprites/key_green.png
+key_red assets/sprites/key_red.png
+sentry assets/sprites/ninja.png

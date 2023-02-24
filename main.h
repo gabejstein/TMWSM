@@ -7,6 +7,7 @@
 #include <SDL_ttf.h>
 
 #include "constants.h"
+#include "input.h"
 #include "structs.h"
 #include "graphics.h"
 
@@ -14,6 +15,8 @@
 #include "entity.h"
 #include "player.h"
 #include "bullet.h"
+
+#include "cutscene.h"
 
 
 extern Game game;
