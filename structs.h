@@ -17,6 +17,7 @@ struct Entity
 	void (*update)(Entity* self);
 	void (*render)(void);
 	void (*onHit)(Entity* self, Entity* other);
+	void (*cleanup)(Entity* self);
 	void(*data); //For extending members
 	SDL_Rect collider;
 	int isHit;
@@ -27,6 +28,12 @@ struct Entity
 	int weightless;
 	float lastTime;
 };
+
+typedef struct
+{
+	int ammo;
+	KEY keys[MAX_KEYS];
+}PlayerObject;
 
 //Enemy Sentry
 typedef struct

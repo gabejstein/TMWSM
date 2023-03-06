@@ -29,6 +29,7 @@ void CreateSentry(float x, float y)
 	e->update = UpdateShooter;
 	e->render = NULL;
 	e->onHit = EnemyHit;
+	e->cleanup = NULL;
 	e->isActive = 1;
 	e->texture = sentryTexture;
 	SDL_QueryTexture(sentryTexture, NULL, NULL, &e->w, &e->h);

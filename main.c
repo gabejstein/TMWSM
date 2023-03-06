@@ -37,6 +37,10 @@ static void Init_SDL(void)
 		exit(1);
 	}
 
+	InitGamepad();
+
+	SDL_ShowCursor(0);
+
 	game.isRunning = 1;
 	
 }
@@ -47,8 +51,8 @@ static void Start(void)
 	InitFont();
 	LoadTextures("assets/sprite_resource.txt");
 
-	StartGameState();
-	//LoadCutscene("assets/cutscenes/cutscene01.txt");
+	//StartGameState();
+	LoadCutscene("assets/cutscenes/opening.txt");
 }
 
 static void ProcessInput(void)
@@ -63,22 +67,20 @@ static void ProcessInput(void)
 			break;
 		case SDL_KEYDOWN:
 			ProcessKeyboardDown(&event);
-			UpdateInputs();
 			break;
 		case SDL_KEYUP:
 			ProcessKeyboardUp(&event);
-			UpdateInputs();
 			break;
-		case SDL_JOYBUTTONDOWN:
+		case SDL_CONTROLLERBUTTONDOWN:
 			ProcessJoyButtonDown(&event);
 			break;
-		case SDL_JOYBUTTONUP:
+		case SDL_CONTROLLERBUTTONUP:
 			ProcessJoyButtonUp(&event);
 			break;
 		}
 	}
 
-	
+	UpdateInputs();
 }
 
 static void Update(void)
@@ -112,6 +114,8 @@ static void Cleanup(void)
 		game.cleanup();
 
 	FreeAllTextures();
+
+	CloseGamepad();
 
 	//SDL-related
 	TTF_Quit();

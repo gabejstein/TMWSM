@@ -1,10 +1,13 @@
 #This is a test script for cutscenes.
 ShowImage "sentry"
-WriteText "Yo Jimbo!"
+WaitSecs 2
+WriteText "Yo Jimbo!" #Testing inline comments
 WaitInput
 #Testing the clear functionality.
 Clear
-WaitInput
 ShowImage "player_walk"
 WriteText "Hahahahaha this is what the player sprite looks like!"
 WaitInput
+Clear
+#FadeOut
+#LoadLevel

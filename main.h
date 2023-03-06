@@ -15,6 +15,7 @@
 #include "entity.h"
 #include "player.h"
 #include "bullet.h"
+#include "hud.h"
 
 #include "cutscene.h"
 

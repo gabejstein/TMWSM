@@ -3,25 +3,22 @@
 #include "map.h"
 
 static Entity* player;
+static PlayerObject* po; //extension data for player
 static float playerSpeed = 400;
 
 static void UpdatePlayer(Entity* self);
+static void Cleanup(Entity* self);
 static void RenderPlayer(void);
 static void PlayerOnHit(Entity* self, Entity* other);
 static void HandleCamera(void);
 static void FireGun(void);
-static void RenderHud(void);
 
-static int ammo = 100;
 static float fireRate = 500;
 static float lastFireTime = 0.0;
 
 static AnimatedSprite walkAnimation;
 
-static KEY keys[MAX_KEYS];
-SDL_Texture* keyTextures[MAX_KEYS];
-
-Vec2 startPos;
+static Vec2 startPos;
 
 static float lastDamagedTime;
 static float damagePeriod = 1000;
@@ -45,11 +42,22 @@ void CreatePlayer(float x, float y)
 	player->update = UpdatePlayer;
 	player->render = RenderPlayer;
 	player->onHit = PlayerOnHit;
+	player->cleanup = Cleanup;
 	player->direction = LEFT;
 
 	player->health = 4;
 	player->tag = TAG_PLAYER;
 	player->weightless = 0;
+
+	po = (PlayerObject*)malloc(sizeof(PlayerObject));
+	memset(po, 0, sizeof(PlayerObject));
+
+	player->data = po;
+
+	po->ammo = 50;
+	po->keys[GREEN_KEY] = 1;
+	po->keys[RED_KEY] = 1;
+	po->keys[BLUE_KEY] = 1;
 
 	AddEntity(player);
 
@@ -61,14 +69,6 @@ void CreatePlayer(float x, float y)
 	walkAnimation.sx = 0;
 	walkAnimation.sy = 0;
 	walkAnimation.speed = 1000.0;
-
-	keys[GREEN_KEY] = 1;
-	keys[RED_KEY] = 1;
-	keys[BLUE_KEY] = 1;
-
-	keyTextures[BLUE_KEY] = GetTexture("key_blue");
-	keyTextures[RED_KEY] = GetTexture("key_red");
-	keyTextures[GREEN_KEY] = GetTexture("key_green");
 	
 }
 
@@ -104,7 +104,7 @@ static void UpdatePlayer(Entity* self)
 
 	if (GetButton(INP_FIRE1) && SDL_GetTicks() - lastFireTime > fireRate)
 	{
-		if(ammo>0 )
+		if(po->ammo>0 )
 			FireGun();
 		lastFireTime = SDL_GetTicks();
 	}
@@ -122,6 +122,14 @@ static void UpdatePlayer(Entity* self)
 
 }
 
+static void Cleanup(Entity* self)
+{
+	printf("Freeing Player Object");
+	PlayerObject* p = (PlayerObject*) self->data;
+	if(p!=NULL)
+		free(p);
+}
+
 static void RenderPlayer(void)
 {
 	//TODO: Replace this with a proper blink
@@ -137,26 +145,6 @@ static void RenderPlayer(void)
 	PlayAnimatedSprite(&walkAnimation, screenPos.x, screenPos.y, flip);
 	
 
-	RenderHud();
-}
-
-static void RenderHud(void)
-{
-	Vec2 keyPos = { 900,5 };
-	int i;
-	for (i = 0; i < MAX_KEYS; i++)
-	{
-		if(keys[i])
-			BlitTexture(keyTextures[i], keyPos.x + (i* 64), keyPos.y);
-	}
-	
-	char ammoDisplay[50];
-	sprintf(ammoDisplay, "Ammo: %d", ammo);
-	DrawText(50, 5, ammoDisplay,255,0,0);
-	char healthDisplay[50];
-	sprintf(healthDisplay, "Health: %d", player->health);
-	DrawText(480, 5, healthDisplay,0,0,255);
-	
 }
 
 static void PlayerOnHit(Entity* self, Entity* other)
@@ -204,7 +192,7 @@ static void FireGun(void)
 
 	SpawnBullet(bulletPos.x,bulletPos.y, bulletVel.x,bulletVel.y,TAG_PLAYER_BULLET);
 
-	ammo--;
+	po->ammo--;
 }
 
 static void HandleCamera(void)
@@ -238,9 +226,9 @@ Entity* GetPlayer(void) { return player; }
 //TODO: Separate removing the key into its own function
 int HasKey(int keyColor)
 {
-	if (keys[keyColor])
+	if (po->keys[keyColor])
 	{
-		keys[keyColor] = 0;
+		po->keys[keyColor] = 0;
 		return 1;
 	}
 

@@ -17,6 +17,9 @@ enum
 	INP_FIRE1
 };
 
+void InitGamepad(void);
+void CloseGamepad(void);
+
 //The following are accessed from the main loop only
 void ProcessKeyboardUp(SDL_Event* event);
 void ProcessKeyboardDown(SDL_Event* event);

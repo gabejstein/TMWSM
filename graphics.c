@@ -193,3 +193,18 @@ void FreeAllTextures(void)
 	}
 	printf("Texture resources freed.\n");
 }
+
+int fadeAmount = 0;
+int FadeOut(void)
+{
+	int value = (SDL_GetTicks() / 1000);
+	fadeAmount += value;
+	SDL_SetRenderDrawColor(game.renderer,0, 0, 0, fadeAmount);
+	SDL_Rect blackScreen = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
+	SDL_RenderFillRect(game.renderer, &blackScreen);
+	SDL_SetRenderDrawColor(game.renderer,0, 0, 0, 0);
+
+	if (fadeAmount >= 255)return 1;
+
+	return 0;
+}

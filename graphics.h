@@ -38,4 +38,6 @@ void FreeAllTextures(void);
 
 void PlayAnimatedSprite(AnimatedSprite* sprite, int x, int y, SDL_RendererFlip flip);
 
+int FadeOut(void);
+
 #endif

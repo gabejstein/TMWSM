@@ -17,13 +17,17 @@ enum
 	SHOW_IMAGE,
 	WRITE_TEXT,
 	CLEAR,
-	WAIT_INPUT
+	WAIT_INPUT,
+	WAIT_SECS,
+	FADE_OUT,
+	LOAD_LEVEL
 };
 
 typedef struct
 {
 	int command;
-	char stringCommand[PARAM_SIZE];
+	char stringParam[PARAM_SIZE];
+	int numParam;
 }ScriptCommand;
 
 typedef struct
@@ -33,6 +37,7 @@ typedef struct
 	int currentLine;
 	int maxLines;
 	float waitTime;
+	float lastTime;
 	int waitForInput;
 }CutsceneScript;
 

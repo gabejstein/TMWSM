@@ -143,7 +143,12 @@ void ClearEntities(void)
 
 	int i;
 	for (i = 0; i < currentEntity; i++)
+	{
+		if (entities[i]->cleanup)
+			entities[i]->cleanup(entities[i]);
 		free(entities[i]);
+	}
+		
 		
 	free(entities);
 

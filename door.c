@@ -14,6 +14,7 @@ void CreateDoor(float x, float y)
 	door->texture = GetTexture("green_door");
 	door->update = NULL;
 	door->render = NULL;
+	door->cleanup = NULL;
 	door->onHit = OnHit;
 	SDL_QueryTexture(door->texture, NULL, NULL, &door->w, &door->h);
 	door->collider.w = door->w;

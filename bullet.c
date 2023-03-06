@@ -30,6 +30,7 @@ void InitBullets(void)
 		e->update = NULL;
 		e->onHit = BulletHit;
 		e->render = NULL;
+		e->cleanup = NULL;
 		e->isActive = 0;
 		e->weightless = 1;
 

@@ -5,3 +5,5 @@ key_blue assets/sprites/key_blue.png
 key_green assets/sprites/key_green.png
 key_red assets/sprites/key_red.png
 sentry assets/sprites/ninja.png
+studio_boshi_logo assets/sprites/StudioBoshi.png
+title assets/sprites/title.png

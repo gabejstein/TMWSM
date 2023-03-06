@@ -1,0 +1,8 @@
+#This is the opening logos
+ShowImage "studio_boshi_logo"
+WaitSecs 3
+ShowImage "title"
+WaitSecs 2
+WriteText "Press Start"
+WaitInput
+LoadLevel

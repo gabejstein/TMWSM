@@ -20,6 +20,8 @@ void StartGameState(void)
 	InitSentry();
 
 	LoadEntities("assets/levels/level02objects.txt");
+
+	CreateHud();
 	
 	isPaused = 0;
 	
@@ -32,13 +34,15 @@ static void update(void)
 		isPaused = isPaused ? 0 : 1;
 	if (isPaused)return;
 
-	UpdateEntities();	
+	UpdateEntities();
+	UpdateHud();
 }
 
 static void render(void)
 {
 	RenderMap();
 	RenderEntities();
+	RenderHud();
 
 	if (isPaused)
 		DrawText(SCREEN_WIDTH / 2-100, SCREEN_HEIGHT / 2, "PAUSED", 255, 255, 255);

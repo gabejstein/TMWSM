@@ -1,18 +1,22 @@
 #include "cutscene.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-CutsceneScript currentCutScene;
-ImageBox imageBox;
-TextBox textBox;
+static CutsceneScript currentCutScene;
+static ImageBox imageBox;
+static TextBox textBox;
 
 static void InterpretScript(char line[SCRIPT_LINE_SIZE], int i);
 static void GetCommand(char buffer[COMMAND_SIZE], char line[SCRIPT_LINE_SIZE]);
 static void GetStringParam(char buffer[PARAM_SIZE], char line[SCRIPT_LINE_SIZE]);
+static int GetIntParam(char buffer[PARAM_SIZE], char line[SCRIPT_LINE_SIZE]);
 static void RenderCutscene(void);
 static void CleanupCutscene(void);
 
 static int curChar;
+
+static int isFadingOut = 0;
 
 void LoadCutscene(char* filePath)
 {
@@ -25,7 +29,6 @@ void LoadCutscene(char* filePath)
 
 	do{
 		fgets(line, SCRIPT_LINE_SIZE, f);
-		printf("%s", line);
 		InterpretScript(line, i);
 		i++;
 	} while (!feof(f));
@@ -43,11 +46,11 @@ void LoadCutscene(char* filePath)
 	game.cleanup = CleanupCutscene;
 
 	imageBox.isVisible = 0;
-	imageBox.x = SCREEN_WIDTH / 2;
-	imageBox.y = 100;
+	imageBox.x = 0;
+	imageBox.y = 0;
 
 	textBox.isVisible = 0;
-	textBox.x = 200;
+	textBox.x = SCREEN_WIDTH/2 - 100;
 	textBox.y = 500;
 	
 }
@@ -71,22 +74,36 @@ static void InterpretScript(char line[SCRIPT_LINE_SIZE], int i)
 		scriptCommand.command = SHOW_IMAGE;
 
 		GetStringParam(param, line);
-		strcpy(scriptCommand.stringCommand, param);
+		strcpy(scriptCommand.stringParam, param);
 	}
 	else if (strncmp(command, "WriteText",COMMAND_SIZE) == 0)
 	{
 		scriptCommand.command = WRITE_TEXT;
 
 		GetStringParam(param, line);
-		strcpy(scriptCommand.stringCommand, param);
+		strcpy(scriptCommand.stringParam, param);
 	}
 	else if (strncmp(command, "WaitInput",COMMAND_SIZE) == 0)
 	{
 		scriptCommand.command = WAIT_INPUT;
 	}
+	else if (strncmp(command, "WaitSecs", COMMAND_SIZE) == 0)
+	{
+		scriptCommand.command = WAIT_SECS;
+		scriptCommand.numParam = GetIntParam(param, line) * 1000; //convert from secs to millisecs
+		printf("Wait num of secs: %d\n", scriptCommand.numParam);
+	}
 	else if (strncmp(command, "Clear", COMMAND_SIZE) == 0)
 	{
 		scriptCommand.command = CLEAR;
+	}
+	else if (strncmp(command, "FadeOut", COMMAND_SIZE) == 0)
+	{
+		scriptCommand.command = FADE_OUT;
+	}
+	else if (strncmp(command, "LoadLevel", COMMAND_SIZE) == 0)
+	{
+		scriptCommand.command = LOAD_LEVEL;
 	}
 	else
 	{
@@ -95,7 +112,8 @@ static void InterpretScript(char line[SCRIPT_LINE_SIZE], int i)
 	}
 
 	currentCutScene.scriptLine[i].command = scriptCommand.command;
-	strcpy(currentCutScene.scriptLine[i].stringCommand, scriptCommand.stringCommand);
+	currentCutScene.scriptLine[i].numParam = scriptCommand.numParam;
+	strcpy(currentCutScene.scriptLine[i].stringParam, scriptCommand.stringParam);
 }
 
 static void GetCommand(char buffer[COMMAND_SIZE], char line[SCRIPT_LINE_SIZE])
@@ -129,8 +147,39 @@ static void GetStringParam(char buffer[PARAM_SIZE], char line[SCRIPT_LINE_SIZE])
 	buffer[i] = '\0';
 }
 
+static int GetIntParam(char buffer[PARAM_SIZE], char line[SCRIPT_LINE_SIZE])
+{
+	int i = 0;
+	curChar++; //skip white space
+
+	while (line[curChar] != '\n' && line[curChar] != ' ')
+	{
+		buffer[i] = line[curChar];
+		i++;
+		curChar++;
+	}
+
+	buffer[i] = '\0';
+
+	int num = atoi(buffer);
+	return num;
+}
+
 void PlayCutscene(void)
 {
+	if (currentCutScene.waitTime > 0)
+	{
+		if (SDL_GetTicks() - currentCutScene.lastTime > currentCutScene.waitTime)
+			currentCutScene.waitTime = 0;
+		else
+		{
+			if (GetButtonDown(INP_SUBMIT))
+				currentCutScene.waitTime = 0;
+			return;
+		}
+			
+	}
+
 	if (currentCutScene.waitForInput)
 	{
 		if (GetButtonDown(INP_SUBMIT))
@@ -143,13 +192,13 @@ void PlayCutscene(void)
 
 	if (command.command == SHOW_IMAGE)
 	{
-		printf("Image ID: %s\n", command.stringCommand);
-		imageBox.image = GetTexture(command.stringCommand);
+		printf("Image ID: %s\n", command.stringParam);
+		imageBox.image = GetTexture(command.stringParam);
 		imageBox.isVisible = 1;
 	}
 	else if (command.command == WRITE_TEXT)
 	{
-		strcpy(textBox.text, command.stringCommand);
+		strcpy(textBox.text, command.stringParam);
 		textBox.isVisible = 1;
 	}
 	else if (command.command == CLEAR)
@@ -157,9 +206,22 @@ void PlayCutscene(void)
 		imageBox.isVisible = 0;
 		textBox.isVisible = 0;
 	}
+	else if (command.command == FADE_OUT)
+	{
+		isFadingOut = 1;
+	}
 	else if (command.command == WAIT_INPUT)
 	{
 		currentCutScene.waitForInput = 1;
+	}
+	else if (command.command == WAIT_SECS)
+	{
+		currentCutScene.waitTime = command.numParam;
+		currentCutScene.lastTime = SDL_GetTicks();
+	}
+	else if (command.command == LOAD_LEVEL)
+	{
+		StartGameState();
 	}
 
 	currentCutScene.currentLine++;
@@ -176,6 +238,9 @@ static void RenderCutscene(void)
 
 	if (textBox.isVisible)
 		DrawText(textBox.x, textBox.y, textBox.text, 255, 255, 255);
+
+	if(isFadingOut)
+		FadeOut();
 }
 
 static void CleanupCutscene(void)
