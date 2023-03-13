@@ -8,6 +8,7 @@ int currentEntity; //The top of the entity stack.
 
 static void debugRender(Entity* e);
 static int RectCollision(int ax, int ay, int aw, int ah, int bx, int by, int bw, int bh);
+static void ResolveSolidCollisions(Entity* self, Entity* other);
 static void HandleTileCollisions(Entity* e);
 
 static float gravity = 8.0;
@@ -22,6 +23,7 @@ void InitEntities(void)
 
 void UpdateEntities(void)
 {
+	
 	int i;
 	for (i = 0; i < currentEntity; i++)
 	{
@@ -60,7 +62,7 @@ void RenderEntities(void)
 		{
 			if (e->render)
 			{
-				e->render();
+				e->render(e);
 				
 			}
 			else
@@ -68,7 +70,7 @@ void RenderEntities(void)
 				BlitTexture(e->texture, e->pos.x-game.camera.x, e->pos.y-game.camera.y);
 			}
 
-			if (game.debug)
+			if (game.settings.debug)
 				debugRender(e);
 		}
 	}
@@ -96,6 +98,11 @@ Entity* NewEntity(void)
 	memset(e, 0, sizeof(Entity));
 	e->isActive = 1;
 	e->weightless = 0;
+	e->isSolid = 0;
+	e->update = NULL;
+	e->render = NULL;
+	e->cleanup = NULL;
+	e->onHit = NULL;
 
 	return e;
 }
@@ -124,6 +131,8 @@ void HandleCollisions(void)
 
 			if (RectCollision(e->pos.x, e->pos.y, e->w, e->h, e2->pos.x, e2->pos.y, e2->w, e2->h))
 			{
+				
+
 				if (e->onHit)
 					e->onHit(e, e2);
 
@@ -131,6 +140,8 @@ void HandleCollisions(void)
 					e2->onHit(e2, e);
 
 				e->isHit = e2->isHit = 1;
+
+				ResolveSolidCollisions(e, e2);
 			}
 		}
 	}
@@ -163,6 +174,49 @@ static int RectCollision(int ax, int ay, int aw, int ah, int bx, int by, int bw,
 	return 0;
 }
 
+static void ResolveSolidCollisions(Entity* self, Entity* other)
+{
+	float adjustmentx = 0, adjustmenty = 0;
+
+	if (other->isSolid)
+	{
+	
+		adjustmentx = self->vel.x > 0 ? -((self->pos.x + self->w + 0.1) - (other->pos.x)) : (other->pos.x + other->w) - (self->pos.x);
+		adjustmenty = self->vel.y > 0 ? -((self->pos.y + self->h + 0.1) - (other->pos.y)) : (other->pos.y + other->h) - (self->pos.y);
+		//It seems like a bad-aid solution, but I found that pushing the object slightly away from the other object by about 0.1 prevents
+		//unwanted collisions from happening. Things like the character being pushed through the floor or floating up to the ceiling.
+		//It's not perfect and has the caveat of the character not being able to squeeze through a 1-tile-sized space, but this can be fixed by making the player smaller
+		//and it's not a big enough problem to bother me.
+
+		float abAdjustmentX = fabs(adjustmentx);
+		float abAdjustmentY = fabs(adjustmenty);
+		if (abAdjustmentX < abAdjustmentY)
+		{
+			if (self->vel.x != 0)
+			{
+				self->pos.x += adjustmentx;
+				self->vel.x = 0;
+			}
+			
+		}
+		else
+		{
+		
+			if (self->vel.y != 0)
+			{
+				self->pos.y += adjustmenty;
+
+				if (self->vel.y > 0)
+					self->isGrounded = 1;
+				self->vel.y = 0;
+			}
+			
+		}
+	
+		
+	}
+}
+
 static void HandleTileCollisions(Entity* e)
 {
 	Vec2 tempPos = { e->pos.x + e->vel.x*game.deltaTime, e->pos.y };
@@ -175,7 +229,7 @@ static void HandleTileCollisions(Entity* e)
 		mx = (tempPos.x + e->w)/TILE_SIZE;
 		my = tempPos.y / TILE_SIZE;
 
-		if (GetTile(mx, my, 1) == 1)
+		if (IsCollisionTile(mx,my,1))
 		{
 			hit = 1;
 		}
@@ -183,7 +237,7 @@ static void HandleTileCollisions(Entity* e)
 		//need to minus the height by 1 because of how int truncation works.
 		my = (tempPos.y + e->h-1) / TILE_SIZE;
 
-		if (GetTile(mx, my, 1) == 1)
+		if (IsCollisionTile(mx, my, 1))
 		{
 			hit = 1;
 		}
@@ -199,14 +253,14 @@ static void HandleTileCollisions(Entity* e)
 		mx = tempPos.x / TILE_SIZE;
 		my = tempPos.y / TILE_SIZE;
 
-		if (GetTile(mx, my, 1) == 1)
+		if (IsCollisionTile(mx, my, 1))
 		{
 			hit = 1;
 		}
 
 		my = (tempPos.y + e->h-1) / TILE_SIZE;
 
-		if (GetTile(mx, my, 1) == 1)
+		if (IsCollisionTile(mx, my, 1))
 		{
 			hit = 1;
 		}
@@ -227,14 +281,14 @@ static void HandleTileCollisions(Entity* e)
 		mx = tempPos.x / TILE_SIZE;
 		my = (tempPos.y + e->h) / TILE_SIZE;
 
-		if (GetTile(mx, my,1) == 1)
+		if (IsCollisionTile(mx, my, 1) || IsOneWayCollider(mx,my,1))
 		{
 			hit = 1;
 		}
 
 		mx = (tempPos.x+e->w-1) / TILE_SIZE;
 
-		if (GetTile(mx, my, 1) == 1)
+		if (IsCollisionTile(mx, my, 1) || IsOneWayCollider(mx, my, 1))
 		{
 			hit = 1;
 		}
@@ -251,14 +305,14 @@ static void HandleTileCollisions(Entity* e)
 		mx = tempPos.x / TILE_SIZE;
 		my = tempPos.y / TILE_SIZE;
 
-		if (GetTile(mx, my,1) == 1)
+		if (IsCollisionTile(mx, my, 1))
 		{
 			hit = 1;
 		}
 
 		mx = (tempPos.x + e->w-1) / TILE_SIZE;
 
-		if (GetTile(mx, my, 1) == 1)
+		if (IsCollisionTile(mx, my, 1))
 		{
 			hit = 1;
 		}

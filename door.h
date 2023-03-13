@@ -1,6 +1,8 @@
 #ifndef DOOR_H
 #define DOOR_H
 
-void CreateDoor(float x, float y);
+void CreateGreenDoor(float x, float y);
+void CreateRedDoor(float x, float y);
+void CreateBlueDoor(float x, float y);
 
 #endif

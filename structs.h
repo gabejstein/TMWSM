@@ -6,6 +6,20 @@
 
 typedef struct Entity Entity;
 
+typedef struct AnimatedSprite AnimatedSprite;
+
+struct AnimatedSprite
+{
+	int currentFrame;
+	int maxFrames;
+	float speed;
+	int sx;
+	int sy;
+	int width;
+	int height;
+	SDL_Texture* texture;
+};
+
 struct Entity
 {
 	Vec2 pos;
@@ -15,7 +29,7 @@ struct Entity
 	int isActive;
 	SDL_Texture* texture;
 	void (*update)(Entity* self);
-	void (*render)(void);
+	void (*render)(Entity* self);
 	void (*onHit)(Entity* self, Entity* other);
 	void (*cleanup)(Entity* self);
 	void(*data); //For extending members
@@ -25,12 +39,15 @@ struct Entity
 	int health;
 	TAG tag;
 	int isGrounded;
+	int isSolid;
 	int weightless;
 	float lastTime;
+	int scoreValue; //how much a powerup/enemy is worth. might separate out.
 };
 
 typedef struct
 {
+	int score;
 	int ammo;
 	KEY keys[MAX_KEYS];
 }PlayerObject;
@@ -40,12 +57,19 @@ typedef struct
 {
 	Vec2 dest; //point to move to
 	int canSeePlayer;
+	AnimatedSprite walkingAnimation;
 }Sentry;
 
 typedef struct
 {
 	int tiles[MAX_MAP_LAYERS][(MAP_WIDTH * MAP_HEIGHT)];
 }Stage;
+
+typedef struct
+{
+	int debug;
+	int soundOn;
+}Settings;
 
 typedef struct
 {
@@ -57,7 +81,7 @@ typedef struct
 	void (*render)();
 	void (*cleanup)();
 	Vec2 camera;
-	int debug;
+	Settings settings;
 }Game;
 
 #endif 

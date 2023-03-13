@@ -4,6 +4,7 @@
 #include "objectfactory.h"
 
 static void RenderTile(int type, int x, int y);
+static void LoadEntities(FILE* f);
 
 Stage* stage;
 
@@ -35,18 +36,18 @@ void LoadMap(char* path)
 		fgetc(f); //skip newline
 		//fgetc(f); //skip newline
 	}
+	fgetc(f);
 	
+	LoadEntities(f);
 
 	fclose(f);
 
-	tileSpriteSet = IMG_LoadTexture(game.renderer, "assets/tiles/Prototype_Tileset_01.png");
+	tileSpriteSet = IMG_LoadTexture(game.renderer, "assets/tiles/Prototype_Tileset_02.png");
 }
 
-void LoadEntities(char* filePath)
+static void LoadEntities(FILE* f)
 {
-	FILE* f = fopen(filePath, "r");
-	if (!f) { printf("Could not load level entities.\n"); exit(1); }
-
+	
 	char buffer[256];
 	Vec2 point;
 	do {
@@ -56,7 +57,6 @@ void LoadEntities(char* filePath)
 		
 	} while (!feof(f));
 
-	fclose(f);
 }
 
 void RenderMap(void)
@@ -72,7 +72,7 @@ void RenderMap(void)
 				int tx = (int)game.camera.x / TILE_SIZE;
 				int ty = (int)game.camera.y / TILE_SIZE;
 				int tile = GetTile(col + tx, row + ty, curLayer);
-				if (tile >= 0)
+				if (tile > 0)
 					RenderTile(tile, col, row);
 			}
 		}
@@ -97,6 +97,30 @@ int GetTile(int x, int y, int layer)
 	
 	tile = -1;
 	return tile;
+}
+
+int IsCollisionTile(int x, int y, int layer)
+{
+	int tile = GetTile(x, y, layer);
+
+	if (tile == 2)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
+int IsOneWayCollider(int x, int y, int layer)
+{
+	int tile = GetTile(x, y, layer);
+
+	if (tile == 3)
+	{
+		return 1;
+	}
+
+	return 0;
 }
 
 static void RenderTile(int type, int x, int y)

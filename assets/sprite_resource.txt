@@ -1,9 +1,14 @@
 player_walk assets/sprites/girl_walk.png
 bullet assets/sprites/bullet1.png
-green_door assets/sprites/Door_01.png
+green_door assets/sprites/door_green.png
+red_door assets/sprites/door_red.png
+blue_door assets/sprites/door_blue.png
 key_blue assets/sprites/key_blue.png
 key_green assets/sprites/key_green.png
 key_red assets/sprites/key_red.png
-sentry assets/sprites/ninja.png
+sentry assets/sprites/Enemy_Sheet_01.png
+shooter assets/sprites/Enemy_Sheet_02.png
 studio_boshi_logo assets/sprites/StudioBoshi.png
 title assets/sprites/title.png
+money assets/sprites/money01.png
+ammoPickup assets/sprites/ammo_pickup.png

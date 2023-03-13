@@ -154,8 +154,10 @@
     <ClCompile Include="main.c" />
     <ClCompile Include="map.c" />
     <ClCompile Include="objectfactory.c" />
+    <ClCompile Include="pickup.c" />
     <ClCompile Include="player.c" />
     <ClCompile Include="sentry.c" />
+    <ClCompile Include="sound.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bullet.h" />
@@ -170,8 +172,10 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="objectfactory.h" />
+    <ClInclude Include="pickup.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="sentry.h" />
+    <ClInclude Include="sound.h" />
     <ClInclude Include="structs.h" />
     <ClInclude Include="vector.h" />
   </ItemGroup>

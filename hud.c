@@ -7,6 +7,7 @@ static Entity* player;
 
 static int ammo;
 static int health;
+static int score;
 static KEY keys[MAX_KEYS];
 
 static SDL_Texture* keyTextures[MAX_KEYS];
@@ -29,10 +30,16 @@ void UpdateHud(void)
 	keys[0] = po->keys[0];
 	keys[1] = po->keys[1];
 	keys[2] = po->keys[2];
+	score = po->score;
 }
 
 void RenderHud(void)
 {
+	SDL_SetRenderDrawColor(game.renderer, 0, 0, 0, 50);
+	SDL_Rect blackScreen = { 0,0,SCREEN_WIDTH,120 };
+	SDL_RenderFillRect(game.renderer, &blackScreen);
+	SDL_SetRenderDrawColor(game.renderer, 0, 0, 0, 0);
+
 	Vec2 keyPos = { 900,5 };
 	int i;
 	for (i = 0; i < MAX_KEYS; i++)
@@ -41,12 +48,15 @@ void RenderHud(void)
 			BlitTexture(keyTextures[i], keyPos.x + (i * 64), keyPos.y);
 	}
 
-	char ammoDisplay[50];
-	sprintf(ammoDisplay, "Ammo: %d", ammo);
-	DrawText(50, 5, ammoDisplay, 255, 0, 0);
-	char healthDisplay[50];
-	sprintf(healthDisplay, "Health: %d", health);
-	DrawText(480, 5, healthDisplay, 0, 0, 255);
+	char buffer[50];
+	sprintf(buffer, "Ammo: %d", ammo);
+	DrawText(50, 5, buffer, 255, 0, 0);
+
+	sprintf(buffer, "Health: %d", health);
+	DrawText(480, 5, buffer, 0, 0, 255);
+
+	sprintf(buffer, "Score: %d", score);
+	DrawText(480, 69, buffer, 0, 0, 255);
 
 }
 

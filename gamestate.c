@@ -13,19 +13,18 @@ void StartGameState(void)
 	game.update = update;
 	game.render = render;
 	game.cleanup = cleanup;
-	LoadMap("assets/levels/level02.txt");
+	
 
 	InitEntities();
 	InitBullets(); //Creates a bullet pool
-	InitSentry();
 
-	LoadEntities("assets/levels/level02objects.txt");
+	LoadMap("assets/levels/mapOutput.txt");
 
 	CreateHud();
 	
 	isPaused = 0;
 	
-	game.debug = 0;
+	PlayMusic();
 }
 
 static void update(void)

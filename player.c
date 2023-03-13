@@ -8,7 +8,7 @@ static float playerSpeed = 400;
 
 static void UpdatePlayer(Entity* self);
 static void Cleanup(Entity* self);
-static void RenderPlayer(void);
+static void RenderPlayer(Entity* self);
 static void PlayerOnHit(Entity* self, Entity* other);
 static void HandleCamera(void);
 static void FireGun(void);
@@ -55,9 +55,10 @@ void CreatePlayer(float x, float y)
 	player->data = po;
 
 	po->ammo = 50;
-	po->keys[GREEN_KEY] = 1;
-	po->keys[RED_KEY] = 1;
-	po->keys[BLUE_KEY] = 1;
+	po->score = 0;
+	po->keys[GREEN_KEY] = 0;
+	po->keys[RED_KEY] = 0;
+	po->keys[BLUE_KEY] = 0;
 
 	AddEntity(player);
 
@@ -124,13 +125,13 @@ static void UpdatePlayer(Entity* self)
 
 static void Cleanup(Entity* self)
 {
-	printf("Freeing Player Object");
+	printf("Freeing Player Object\n");
 	PlayerObject* p = (PlayerObject*) self->data;
 	if(p!=NULL)
 		free(p);
 }
 
-static void RenderPlayer(void)
+static void RenderPlayer(Entity* self)
 {
 	//TODO: Replace this with a proper blink
 	if (isDamageBlink && ((SDL_GetTicks()/100) % 2) == 0)return;
@@ -149,9 +150,8 @@ static void RenderPlayer(void)
 
 static void PlayerOnHit(Entity* self, Entity* other)
 {
-	//TODO: separate into its own function and create a damage delay.
-
-	if ((other->tag == TAG_ENEMY || other->tag==TAG_ENEMY_BULLET) && !isDamageBlink)
+	
+	if ((other->tag == TAG_ENEMY || other->tag==TAG_ENEMY_BULLET) && !isDamageBlink) //TODO: separate into its own function and create a damage delay.
 	{
 		self->health--;
 		lastDamagedTime = SDL_GetTicks();
@@ -159,7 +159,7 @@ static void PlayerOnHit(Entity* self, Entity* other)
 	}
 		
 
-	
+	//Should move to update maybe.
 	if (self->health <= 0)
 	{
 		//self->isActive = 0;
@@ -193,6 +193,8 @@ static void FireGun(void)
 	SpawnBullet(bulletPos.x,bulletPos.y, bulletVel.x,bulletVel.y,TAG_PLAYER_BULLET);
 
 	po->ammo--;
+
+	PlaySound(SFX_SHOOT,0);
 }
 
 static void HandleCamera(void)
@@ -222,6 +224,11 @@ static void HandleCamera(void)
 }
 
 Entity* GetPlayer(void) { return player; }
+
+void GetKey(KEY keyType)
+{
+	po->keys[keyType] = 1;
+}
 
 //TODO: Separate removing the key into its own function
 int HasKey(int keyColor)

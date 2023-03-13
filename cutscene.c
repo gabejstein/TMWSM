@@ -167,6 +167,9 @@ static int GetIntParam(char buffer[PARAM_SIZE], char line[SCRIPT_LINE_SIZE])
 
 void PlayCutscene(void)
 {
+	//if (isFadingOut)
+		//return;
+
 	if (currentCutScene.waitTime > 0)
 	{
 		if (SDL_GetTicks() - currentCutScene.lastTime > currentCutScene.waitTime)
@@ -239,8 +242,11 @@ static void RenderCutscene(void)
 	if (textBox.isVisible)
 		DrawText(textBox.x, textBox.y, textBox.text, 255, 255, 255);
 
-	if(isFadingOut)
+	if (isFadingOut)
+	{
 		FadeOut();
+	}
+		
 }
 
 static void CleanupCutscene(void)

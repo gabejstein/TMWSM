@@ -12,4 +12,6 @@ void AddEntity(Entity* e);
 void HandleCollisions(void);
 void ClearEntities(void);
 
+Entity* NewEntity(void);
+
 #endif

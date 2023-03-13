@@ -1,0 +1,7 @@
+# - comment
+ShowImage <string> - Displays an image to screen
+WriteText <string> - Writes text in text box
+Clear - Clears the screen of any images/text
+WaitInput - Halts cutscene until start/enter button pushed.
+WaitSecs <int> - Halts cutscene for duration of int value
+LoadLevel - Loads the first level.

@@ -9,18 +9,6 @@
 
 typedef struct Texture Texture;
 
-typedef struct
-{
-	int currentFrame;
-	int maxFrames;
-	float speed;
-	int sx;
-	int sy;
-	int width;
-	int height;
-	SDL_Texture* texture;
-}AnimatedSprite;
-
 struct Texture
 {
 	SDL_Texture* texture;

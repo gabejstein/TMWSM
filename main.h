@@ -10,6 +10,7 @@
 #include "input.h"
 #include "structs.h"
 #include "graphics.h"
+#include "sound.h"
 
 #include "gamestate.h"
 #include "entity.h"

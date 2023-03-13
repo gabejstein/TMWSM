@@ -5,6 +5,8 @@ Game game;
 
 float lastFrame = 0.0;
 
+static void LoadSettings(char* path);
+
 static void Init_SDL(void)
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
@@ -29,6 +31,8 @@ static void Init_SDL(void)
 		return;
 	}
 
+	SDL_SetRenderDrawBlendMode(game.renderer, SDL_BLENDMODE_BLEND);
+
 	IMG_Init(IMG_INIT_PNG);
 
 	if (TTF_Init() < 0)
@@ -37,22 +41,61 @@ static void Init_SDL(void)
 		exit(1);
 	}
 
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1)
+	{
+		printf("Could not initialize SDL_Mixer.\n");
+		exit(1);
+	}
+
+	Mix_AllocateChannels(MAX_SFX_CHANNELS);
+
 	InitGamepad();
 
 	SDL_ShowCursor(0);
 
-	game.isRunning = 1;
-	
+}
+
+static void LoadSettings(char* path)
+{
+	char buffer[256];
+	int arg;
+	FILE* f = fopen(path, "r");
+	if (f)
+	{
+		do
+		{
+			fscanf(f, "%s %d", buffer, &arg);
+			if (strcmp(buffer, "debug") == 0)
+			{
+				game.settings.debug = arg;
+			}
+			else if (strcmp(buffer, "soundOn") == 0)
+			{
+				game.settings.soundOn = arg;
+			}
+		} while (!feof(f));
+		fclose(f);
+	}
+	else
+	{
+		printf("Could not read settings file.\n");
+	}
 }
 
 static void Start(void)
 {
+	memset(&game, 0, sizeof(game));
+
 	Init_SDL();
 	InitFont();
 	LoadTextures("assets/sprite_resource.txt");
+	InitSounds();
 
-	//StartGameState();
-	LoadCutscene("assets/cutscenes/opening.txt");
+	game.isRunning = 1;
+	LoadSettings("settings.ini");
+
+	StartGameState();
+	//LoadCutscene("assets/cutscenes/opening.txt");
 }
 
 static void ProcessInput(void)
@@ -114,10 +157,11 @@ static void Cleanup(void)
 		game.cleanup();
 
 	FreeAllTextures();
-
-	CloseGamepad();
+	CleanupSound();
 
 	//SDL-related
+	CloseGamepad();
+	Mix_Quit();
 	TTF_Quit();
 	IMG_Quit();
 	SDL_DestroyRenderer(game.renderer);

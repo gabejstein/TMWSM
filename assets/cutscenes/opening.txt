@@ -1,6 +1,8 @@
 #This is the opening logos
 ShowImage "studio_boshi_logo"
-WaitSecs 3
+WaitSecs 2
+FadeOut
+WaitSecs 1
 ShowImage "title"
 WaitSecs 2
 WriteText "Press Start"

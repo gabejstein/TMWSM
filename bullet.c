@@ -20,20 +20,16 @@ void InitBullets(void)
 	int i;
 	for (i = 0; i < MAX_BULLETS; i++)
 	{
-		Entity* e = (Entity*)malloc(sizeof(Entity));
-		memset(e, '0', sizeof(Entity));
+		Entity* e = NewEntity();
+
 		e->texture = bulletTexture;
 		SDL_QueryTexture(bulletTexture, NULL, NULL, &e->w, &e->h);
 		e->collider.w = e->w;
 		e->collider.h = e->h;
 
-		e->update = NULL;
 		e->onHit = BulletHit;
-		e->render = NULL;
-		e->cleanup = NULL;
 		e->isActive = 0;
 		e->weightless = 1;
-
 		bulletPool[i] = e;
 
 		AddEntity(e);
@@ -57,6 +53,7 @@ void SpawnBullet(float x, float y, float vx, float vy, TAG tag)
 
 static void BulletHit(Entity* self, Entity* other)
 {
-	self->isActive = 0;
+	if(other->tag != TAG_PLAYER_BULLET && other->tag!=TAG_ENEMY_BULLET)
+		self->isActive = 0;
 	//TODO: create some impact effects
 }

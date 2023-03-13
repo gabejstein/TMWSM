@@ -7,43 +7,93 @@ static void UpdateEnemy(Entity* self);
 static void UpdateShooter(Entity* self);
 static void RenderEnemy(Entity* self);
 static void EnemyHit(Entity* self, Entity* other);
-
-static SDL_Texture* sentryTexture;
+static void CleanupEnemy(Entity* e);
+static Entity* NewEnemy(void);
 
 static float sentrySpeed = 300.0;
 
-void InitSentry(void)
+static int enemySize = 64;
+
+//Base enemy constructor
+static Entity* NewEnemy(void)
 {
-	sentryTexture = GetTexture("sentry");
-}
+	Entity* e = NewEntity();
 
-void CreateSentry(float x, float y)
-{
-
-	Entity* e = (Entity*)malloc(sizeof(Entity));
-	memset(e, '0', sizeof(Entity));
-
-	e->pos.x = x;
-	e->pos.y = y;
-	//e->update = UpdateEnemy;
-	e->update = UpdateShooter;
-	e->render = NULL;
 	e->onHit = EnemyHit;
-	e->cleanup = NULL;
+	e->cleanup = CleanupEnemy;
+	e->render = NULL;
 	e->isActive = 1;
-	e->texture = sentryTexture;
-	SDL_QueryTexture(sentryTexture, NULL, NULL, &e->w, &e->h);
+	//SDL_QueryTexture(sentryTexture, NULL, NULL, &e->w, &e->h);
+	e->w = enemySize;
+	e->h = enemySize;
 	e->collider.x = e->pos.x;
 	e->collider.y = e->pos.y;
 	e->collider.w = e->w;
 	e->collider.h = e->h;
 	e->health = 3;
 	e->tag = TAG_ENEMY;
-	e->weightless = 0;
 	e->direction = LEFT;
 	e->lastTime = 0;
+	
+	return e;
+}
+
+void CreateSentry(float x, float y)
+{
+
+	Entity* e = NewEnemy();
+
+	e->pos.x = x;
+	e->pos.y = y;
+	e->update = UpdateEnemy;
+	e->render = RenderEnemy;
+
+	e->texture = GetTexture("sentry");
+	e->health = 2;
+
+	Sentry* sentryData = (Sentry*)malloc(sizeof(Sentry));
+	memset(sentryData, 0, sizeof(Sentry));
+	sentryData->walkingAnimation.currentFrame = 0;
+	sentryData->walkingAnimation.height= 64;
+	sentryData->walkingAnimation.width = 64;
+	sentryData->walkingAnimation.texture = e->texture;
+	sentryData->walkingAnimation.maxFrames = 3;
+	sentryData->walkingAnimation.sx = 0;
+	sentryData->walkingAnimation.sy = 0;
+	sentryData->walkingAnimation.speed = 1;
+
+	e->data = sentryData;
+
 	AddEntity(e);
 
+}
+
+void CreateShooter(float x, float y)
+{
+	Entity* e = NewEnemy();
+
+	e->pos.x = x;
+	e->pos.y = y;
+	e->update = UpdateShooter;
+	e->render = RenderEnemy;
+
+	e->texture = GetTexture("shooter");
+	e->health = 3;
+
+	Sentry* sentryData = (Sentry*)malloc(sizeof(Sentry));
+	memset(sentryData, 0, sizeof(Sentry));
+	sentryData->walkingAnimation.currentFrame = 0;
+	sentryData->walkingAnimation.height = 64;
+	sentryData->walkingAnimation.width = 64;
+	sentryData->walkingAnimation.texture = e->texture;
+	sentryData->walkingAnimation.maxFrames = 3;
+	sentryData->walkingAnimation.sx = 0;
+	sentryData->walkingAnimation.sy = 0;
+	sentryData->walkingAnimation.speed = 1;
+
+	e->data = sentryData;
+
+	AddEntity(e);
 }
 
 static void UpdateEnemy(Entity* self)
@@ -59,17 +109,20 @@ static void UpdateEnemy(Entity* self)
 	mx /= TILE_SIZE;
 	my = self->pos.y;
 	my /= TILE_SIZE;
-	if (GetTile(mx, my, 1) == 1)
+	if (IsCollisionTile(mx,my,1))
 	{
 		self->direction = self->direction == LEFT ? RIGHT : LEFT;
 	}
 
 	my = self->pos.y + self->h;
 	my /= TILE_SIZE;
-	if (GetTile(mx, my, 1) == -1)
+	if (GetTile(mx, my, 1) == 0)
 	{
 		self->direction = self->direction == LEFT ? RIGHT : LEFT;
 	}
+
+	Sentry* sentry = (Sentry*) self->data;
+	sentry->walkingAnimation.speed = 1;
 
 }
 
@@ -112,6 +165,7 @@ static void UpdateShooter(Entity* self)
 
 	if (bulVel.x != 0 && SDL_GetTicks() - self->lastTime > 1000)
 	{
+		PlaySound(SFX_SHOOT2,-1);
 		SpawnBullet(bulPos.x, self->pos.y, bulVel.x, bulVel.y, TAG_ENEMY_BULLET);
 		self->lastTime = SDL_GetTicks();
 	}
@@ -119,12 +173,32 @@ static void UpdateShooter(Entity* self)
 
 static void RenderEnemy(Entity* self)
 {
+	Sentry* sentry = (Sentry*)self->data;
+	SDL_RendererFlip flip = self->direction == RIGHT ? 0 : 1;
+	if (!self->isGrounded)
+		sentry->walkingAnimation.speed = 0;
 
+	Vec2 screenPos = { self->pos.x - game.camera.x,self->pos.y - game.camera.y };
+
+	PlayAnimatedSprite(&sentry->walkingAnimation, screenPos.x, screenPos.y, flip);
+	
 }
 
 static void EnemyHit(Entity* self, Entity* other)
 {
 	if(other->tag==TAG_PLAYER_BULLET)
-		if(--self->health<=0)
+		if (--self->health <= 0)
+		{
 			self->isActive = 0;
+			PlaySound(SFX_ENEMY_DEATH, -1);
+		}
+			
+
+	if(other->isSolid)
+		self->direction = self->direction == LEFT ? RIGHT : LEFT;
+}
+
+static void CleanupEnemy(Entity* e)
+{
+	free(e->data);
 }
