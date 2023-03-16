@@ -20,6 +20,13 @@ struct AnimatedSprite
 	SDL_Texture* texture;
 };
 
+typedef struct
+{
+	int hasCollision;
+	float x;
+	float y;
+}TileCollision;
+
 struct Entity
 {
 	Vec2 pos;
@@ -32,6 +39,7 @@ struct Entity
 	void (*render)(Entity* self);
 	void (*onHit)(Entity* self, Entity* other);
 	void (*cleanup)(Entity* self);
+	void (*onTileHit)(Entity* self);
 	void(*data); //For extending members
 	SDL_Rect collider;
 	int isHit;
@@ -57,6 +65,8 @@ typedef struct
 {
 	Vec2 dest; //point to move to
 	int canSeePlayer;
+	int isDamaged;
+	float lastDamaged;
 	AnimatedSprite walkingAnimation;
 }Sentry;
 

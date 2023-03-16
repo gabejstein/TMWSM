@@ -3,22 +3,32 @@
 #include "main.h"
 #include "map.h"
 
+static Entity* NewEnemy(float x, float y);
+static void GoBackAndForth(Entity* self);
 static void UpdateEnemy(Entity* self);
 static void UpdateShooter(Entity* self);
+static void UpdateSaw(Entity* self);
 static void RenderEnemy(Entity* self);
 static void EnemyHit(Entity* self, Entity* other);
 static void CleanupEnemy(Entity* e);
-static Entity* NewEnemy(void);
+
 
 static float sentrySpeed = 300.0;
 
 static int enemySize = 64;
 
 //Base enemy constructor
-static Entity* NewEnemy(void)
+static Entity* NewEnemy(float x, float y)
 {
 	Entity* e = NewEntity();
+	if (e == NULL)
+	{
+		printf("Could not create new enemy.\n");
+		exit(1);
+	}
 
+	e->pos.x = x;
+	e->pos.y = y;
 	e->onHit = EnemyHit;
 	e->cleanup = CleanupEnemy;
 	e->render = NULL;
@@ -34,17 +44,16 @@ static Entity* NewEnemy(void)
 	e->tag = TAG_ENEMY;
 	e->direction = LEFT;
 	e->lastTime = 0;
-	
+	AddEntity(e);
+
 	return e;
 }
 
 void CreateSentry(float x, float y)
 {
 
-	Entity* e = NewEnemy();
+	Entity* e = NewEnemy(x,y);
 
-	e->pos.x = x;
-	e->pos.y = y;
 	e->update = UpdateEnemy;
 	e->render = RenderEnemy;
 
@@ -64,16 +73,12 @@ void CreateSentry(float x, float y)
 
 	e->data = sentryData;
 
-	AddEntity(e);
-
 }
 
 void CreateShooter(float x, float y)
 {
-	Entity* e = NewEnemy();
+	Entity* e = NewEnemy(x,y);
 
-	e->pos.x = x;
-	e->pos.y = y;
 	e->update = UpdateShooter;
 	e->render = RenderEnemy;
 
@@ -93,10 +98,18 @@ void CreateShooter(float x, float y)
 
 	e->data = sentryData;
 
-	AddEntity(e);
 }
 
-static void UpdateEnemy(Entity* self)
+void CreateSaw(float x, float y)
+{
+	Entity* e = NewEnemy(x,y);
+	e->update = UpdateSaw;
+	e->texture = GetTexture("saw");
+	e->health = 4;
+	e->weightless = 1;
+}
+
+static void UpdateSaw(Entity* self)
 {
 	if (self->direction == LEFT)
 		self->vel.x = -sentrySpeed;
@@ -105,21 +118,42 @@ static void UpdateEnemy(Entity* self)
 
 	//Turn enemies around if they hit a wall or ledge.
 	int mx, my;
-	mx = self->direction == LEFT ? self->pos.x-1 : self->pos.x + self->w;
-	mx /= TILE_SIZE;
-	my = self->pos.y;
-	my /= TILE_SIZE;
-	if (IsCollisionTile(mx,my,1))
+	mx = self->direction == LEFT ? ((self->pos.x - 1) / TILE_SIZE) : (self->pos.x + self->w + 10) / TILE_SIZE;
+	my = self->pos.y / TILE_SIZE;
+	if (IsCollisionTile(mx, my, 1))
+	{
+		self->direction = self->direction == LEFT ? RIGHT : LEFT;
+	}
+}
+
+static void GoBackAndForth(Entity* self)
+{
+	if (self->direction == LEFT)
+		self->vel.x = -sentrySpeed;
+	else
+		self->vel.x = sentrySpeed;
+
+	//Turn enemies around if they hit a wall or ledge.
+	int mx, my;
+	mx = self->direction == LEFT ? ((self->pos.x-1)/TILE_SIZE) : (self->pos.x + self->w+10)/TILE_SIZE;
+	my = self->pos.y / TILE_SIZE;
+	if (IsCollisionTile(mx, my, 1))
 	{
 		self->direction = self->direction == LEFT ? RIGHT : LEFT;
 	}
 
-	my = self->pos.y + self->h;
-	my /= TILE_SIZE;
+	//Now check if there's a ledge
+	mx = self->direction == LEFT ? mx - 1 : mx + 1;
+	my = (self->pos.y + self->h+10)/TILE_SIZE;
 	if (GetTile(mx, my, 1) == 0)
 	{
 		self->direction = self->direction == LEFT ? RIGHT : LEFT;
 	}
+}
+
+static void UpdateEnemy(Entity* self)
+{
+	GoBackAndForth(self);
 
 	Sentry* sentry = (Sentry*) self->data;
 	sentry->walkingAnimation.speed = 1;
@@ -174,6 +208,10 @@ static void UpdateShooter(Entity* self)
 static void RenderEnemy(Entity* self)
 {
 	Sentry* sentry = (Sentry*)self->data;
+
+	//TODO: Replace this with a proper blink
+	//if (sentry->isDamaged && ((SDL_GetTicks() / 100) % 2) == 0)return;
+
 	SDL_RendererFlip flip = self->direction == RIGHT ? 0 : 1;
 	if (!self->isGrounded)
 		sentry->walkingAnimation.speed = 0;
@@ -186,12 +224,16 @@ static void RenderEnemy(Entity* self)
 
 static void EnemyHit(Entity* self, Entity* other)
 {
-	if(other->tag==TAG_PLAYER_BULLET)
+	if (other->tag == TAG_PLAYER_BULLET)
+	{
 		if (--self->health <= 0)
 		{
 			self->isActive = 0;
 			PlaySound(SFX_ENEMY_DEATH, -1);
 		}
+		
+	}
+		
 			
 
 	if(other->isSolid)
@@ -200,5 +242,6 @@ static void EnemyHit(Entity* self, Entity* other)
 
 static void CleanupEnemy(Entity* e)
 {
-	free(e->data);
+	if(e->data!=NULL)
+		free(e->data);
 }

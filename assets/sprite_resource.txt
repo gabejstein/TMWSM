@@ -1,3 +1,4 @@
+tileset_01 assets/tiles/Prototype_Tileset_01.png
 player_walk assets/sprites/girl_walk.png
 bullet assets/sprites/bullet1.png
 green_door assets/sprites/door_green.png
@@ -12,3 +13,4 @@ studio_boshi_logo assets/sprites/StudioBoshi.png
 title assets/sprites/title.png
 money assets/sprites/money01.png
 ammoPickup assets/sprites/ammo_pickup.png
+saw assets/sprites/saw_01.png

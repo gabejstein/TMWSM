@@ -42,7 +42,7 @@ void LoadMap(char* path)
 
 	fclose(f);
 
-	tileSpriteSet = IMG_LoadTexture(game.renderer, "assets/tiles/Prototype_Tileset_02.png");
+	tileSpriteSet = GetTexture("tileset_01");
 }
 
 static void LoadEntities(FILE* f)
@@ -72,7 +72,7 @@ void RenderMap(void)
 				int tx = (int)game.camera.x / TILE_SIZE;
 				int ty = (int)game.camera.y / TILE_SIZE;
 				int tile = GetTile(col + tx, row + ty, curLayer);
-				if (tile > 0)
+				if (tile > -1)
 					RenderTile(tile, col, row);
 			}
 		}
@@ -103,7 +103,7 @@ int IsCollisionTile(int x, int y, int layer)
 {
 	int tile = GetTile(x, y, layer);
 
-	if (tile == 2)
+	if (tile == 1)
 	{
 		return 1;
 	}
@@ -115,7 +115,7 @@ int IsOneWayCollider(int x, int y, int layer)
 {
 	int tile = GetTile(x, y, layer);
 
-	if (tile == 3)
+	if (tile == 2)
 	{
 		return 1;
 	}

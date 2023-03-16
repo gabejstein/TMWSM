@@ -1,4 +1,5 @@
 #include "sound.h"
+#include "main.h"
 
 static Mix_Chunk* sfxs[SFX_MAX];
 static Mix_Music* music = NULL;
@@ -18,6 +19,7 @@ void InitSounds(void)
 
 void PlaySound(int sound, int channel)
 {
+	if (!game.settings.soundOn)return;
 	Mix_PlayChannel(-1,sfxs[sound], 0);
 }
 
@@ -34,6 +36,7 @@ void LoadMusic(char* path)
 
 void PlayMusic(void)
 {
+	if (!game.settings.soundOn)return;
 	Mix_PlayMusic(music, -1);
 }
 

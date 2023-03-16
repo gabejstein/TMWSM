@@ -52,4 +52,9 @@ void CreateObject(char* name, float x, float y)
 		printf("Shooter initialized at %f %f\n", x, y);
 		CreateShooter(x, y);
 	}
+	else if (strcmp(name, "saw") == 0)
+	{
+		printf("Saw initialized at %f %f\n", x, y);
+		CreateSaw(x, y);
+	}
 }

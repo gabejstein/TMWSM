@@ -5,6 +5,7 @@
 static Entity* player;
 static PlayerObject* po; //extension data for player
 static float playerSpeed = 400;
+static float jumpForce = 650.0;
 
 static void UpdatePlayer(Entity* self);
 static void Cleanup(Entity* self);
@@ -13,6 +14,7 @@ static void PlayerOnHit(Entity* self, Entity* other);
 static void HandleCamera(void);
 static void FireGun(void);
 
+static int startingAmmo = 20;
 static float fireRate = 500;
 static float lastFireTime = 0.0;
 
@@ -42,19 +44,21 @@ void CreatePlayer(float x, float y)
 	player->update = UpdatePlayer;
 	player->render = RenderPlayer;
 	player->onHit = PlayerOnHit;
+	player->onTileHit = NULL;
 	player->cleanup = Cleanup;
 	player->direction = LEFT;
 
 	player->health = 4;
 	player->tag = TAG_PLAYER;
 	player->weightless = 0;
+	player->isSolid = 1;
 
 	po = (PlayerObject*)malloc(sizeof(PlayerObject));
 	memset(po, 0, sizeof(PlayerObject));
 
 	player->data = po;
 
-	po->ammo = 50;
+	po->ammo = startingAmmo;
 	po->score = 0;
 	po->keys[GREEN_KEY] = 0;
 	po->keys[RED_KEY] = 0;
@@ -91,7 +95,7 @@ static void UpdatePlayer(Entity* self)
 
 	if (GetButton(INP_JUMP) && player->isGrounded)
 	{
-		player->vel.y -= 450.0;
+		player->vel.y -= jumpForce;
 		player->isGrounded = 0;
 	}
 	/*
@@ -162,9 +166,10 @@ static void PlayerOnHit(Entity* self, Entity* other)
 	//Should move to update maybe.
 	if (self->health <= 0)
 	{
-		//self->isActive = 0;
+		self->isActive = 0;
 		self->pos = startPos;
-		self->health = 4;
+		//self->health = 4;
+		
 	}
 		
 }

@@ -5,6 +5,7 @@
 static void update(void);
 static void render(void);
 static void cleanup(void);
+static void StartLevelOver(void);
 
 static int isPaused;
 
@@ -33,6 +34,13 @@ static void update(void)
 		isPaused = isPaused ? 0 : 1;
 	if (isPaused)return;
 
+	if (GetPlayer()->health <= 0)
+	{
+		StartLevelOver();
+		return;
+	}
+		
+
 	UpdateEntities();
 	UpdateHud();
 }
@@ -51,4 +59,10 @@ static void cleanup(void)
 {
 	ClearEntities();
 	UnloadMap();
+}
+
+static void StartLevelOver(void)
+{
+	cleanup();
+	StartGameState();
 }

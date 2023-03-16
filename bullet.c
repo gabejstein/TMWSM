@@ -10,6 +10,7 @@ Entity* bulletPool[MAX_BULLETS];
 int current;
 
 static void BulletHit(Entity* self, Entity* other);
+static void BulletHitsTile(Entity* self);
 
 void InitBullets(void)
 {
@@ -28,6 +29,7 @@ void InitBullets(void)
 		e->collider.h = e->h;
 
 		e->onHit = BulletHit;
+		e->onTileHit = BulletHitsTile;
 		e->isActive = 0;
 		e->weightless = 1;
 		bulletPool[i] = e;
@@ -53,7 +55,18 @@ void SpawnBullet(float x, float y, float vx, float vy, TAG tag)
 
 static void BulletHit(Entity* self, Entity* other)
 {
-	if(other->tag != TAG_PLAYER_BULLET && other->tag!=TAG_ENEMY_BULLET)
+	if(other->isSolid==1)
+		self->isActive = 0;
+
+	if (self->tag == TAG_ENEMY_BULLET && other->tag == TAG_PLAYER)
+		self->isActive = 0;
+
+	if (self->tag == TAG_PLAYER_BULLET && other->tag == TAG_ENEMY)
 		self->isActive = 0;
 	//TODO: create some impact effects
+}
+
+static void BulletHitsTile(Entity* self)
+{
+	self->isActive = 0;
 }

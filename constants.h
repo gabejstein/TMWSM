@@ -12,6 +12,7 @@
 #define MAP_HEIGHT 30
 
 #define TILE_SIZE 64
+#define INV_TILE_SIZE (1.0 / TILE_SIZE)
 
 #define TILES_ON_SCREEN_W 20
 #define TILES_ON_SCREEN_H 12
