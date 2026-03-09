@@ -11,7 +11,7 @@ static SDL_Rect src[9];
 void InitDialogueBox(void)
 {
 	memset(&dBox, 0, sizeof(DialogueBox));
-	dBox.texture = GetTexture("dialogue_box");
+	dBox.texture = Graphics_GetTexture("dialogue_box");
 	dBox.sliceSize = 32; //TODO: Query the texture size and automatically do this.
 
 	int i;

@@ -1,10 +1,11 @@
 #include <stdio.h>
+#include <string.h>
 #include "main.h"
 
 Game game;
 UserData user;
 
-float lastFrame = 0.0;
+static float lastFrame = 0.0;
 
 static void LoadSettings(char* path);
 static void InitLevelQueue(char* path);
@@ -97,9 +98,9 @@ static void Start(void)
 	memset(&game, 0, sizeof(game));
 
 	Init_SDL();
-	InitFont();
+	Graphics_InitFont();
 	InitLevelQueue("assets/level_resource.txt");
-	LoadTextures("assets/sprite_resource.txt");
+	Graphics_LoadTextures("assets/sprite_resource.txt");
 	InitSounds();
 	InitDialogueBox();
 
@@ -169,7 +170,7 @@ static void Cleanup(void)
 		game.cleanup();
 
 	FreeLevelQueue();
-	FreeAllTextures();
+	Graphics_FreeAllTextures();
 	CleanupSound();
 
 	//SDL-related

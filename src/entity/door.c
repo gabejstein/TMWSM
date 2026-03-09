@@ -22,7 +22,7 @@ static Entity* CreateDoor(float x, float y)
 void CreateGreenDoor(float x, float y)
 {
 	Entity* door = CreateDoor(x, y);
-	door->texture = GetTexture("green_door");
+	door->texture = Graphics_GetTexture("green_door");
 	SDL_QueryTexture(door->texture, NULL, NULL, &door->w, &door->h);
 	door->scoreValue = GREEN_KEY;
 	AddEntity(door);
@@ -31,7 +31,7 @@ void CreateGreenDoor(float x, float y)
 void CreateRedDoor(float x, float y)
 {
 	Entity* door = CreateDoor(x, y);
-	door->texture = GetTexture("red_door");
+	door->texture = Graphics_GetTexture("red_door");
 	SDL_QueryTexture(door->texture, NULL, NULL, &door->w, &door->h);
 	door->scoreValue = RED_KEY;
 	AddEntity(door);
@@ -40,7 +40,7 @@ void CreateRedDoor(float x, float y)
 void CreateBlueDoor(float x, float y)
 {
 	Entity* door = CreateDoor(x, y);
-	door->texture = GetTexture("blue_door");
+	door->texture = Graphics_GetTexture("blue_door");
 	SDL_QueryTexture(door->texture, NULL, NULL, &door->w, &door->h);
 	door->scoreValue = BLUE_KEY;
 	AddEntity(door);

@@ -14,7 +14,7 @@ void CreateSpike(float x, float y)
 	e->update = UpdateSpike;
 	e->render = RenderSpike;
 	e->onHit = SpikeHit;
-	e->texture = GetTexture("door_red");
+	e->texture = Graphics_GetTexture("door_red");
 	SDL_QueryTexture(e->texture, NULL, NULL, &e->w, &e->h);
 
 	AddEntity(e);

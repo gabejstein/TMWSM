@@ -44,7 +44,7 @@ void LoadMap(char* path)
 
 	fclose(f);
 
-	tileSpriteSet = GetTexture("tileset_01");
+	tileSpriteSet = Graphics_GetTexture("tileset_01");
 	LoadMusic(stage->music);
 }
 

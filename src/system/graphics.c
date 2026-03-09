@@ -1,5 +1,6 @@
 #include "graphics.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -14,7 +15,7 @@ static SDL_Rect glyphs[MAX_GLYPHS];
 //Texture-related stuff
 //Linked list to hold all textures
 static Texture* textureListHead = NULL;
-static SDL_Renderer* sRenderer;
+static SDL_Renderer* sRenderer = NULL;
 
 static void AddTexture(char* id, char* path);
 
@@ -29,7 +30,7 @@ void Graphics_SetRenderer(const SDL_Renderer* renderer)
 	sRenderer = renderer;
 }
 
-void BlitTexture(SDL_Texture* texture, int x, int y)
+void Graphics_BlitTexture(SDL_Texture* texture, int x, int y)
 {
 	SDL_Rect dest;
 	dest.x = x;
@@ -40,7 +41,7 @@ void BlitTexture(SDL_Texture* texture, int x, int y)
 }
 
 //I'll admit that I took inspiration from Parallel Realities for this font atlas method.
-void InitFont(void)
+void Graphics_InitFont(void)
 {
 	SDL_Surface* fontSurface, *stringSurface;
 	char c[2];
@@ -90,7 +91,7 @@ void InitFont(void)
 	SDL_FreeSurface(fontSurface);
 }
 
-void DrawText(int x, int y, char* text, int r, int g, int b)
+void Graphics_DrawText(int x, int y, char* text, int r, int g, int b)
 {
 	
 	char c;
@@ -163,7 +164,7 @@ static void AddTexture(char* id, char* path)
 }
 
 //Loads all the textures at once based on the resource list.
-void LoadTextures(char* resourcePath)
+void Graphics_LoadTextures(const char* resourcePath)
 {
 	char textID[256], textPath[256];
 
@@ -179,7 +180,7 @@ void LoadTextures(char* resourcePath)
 }
 
 //Pulls textures from repository.
-SDL_Texture* GetTexture(char* id)
+SDL_Texture* Graphics_GetTexture(const char* id)
 {
 	Texture* current;
 	for (current = textureListHead; current != NULL; current = current->next)
@@ -194,7 +195,7 @@ SDL_Texture* GetTexture(char* id)
 	return NULL;
 }
 
-void FreeAllTextures(void)
+void Graphics_FreeAllTextures(void)
 {
 	printf("Freeing texture resources.\n");
 	Texture* current = textureListHead;

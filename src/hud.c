@@ -16,9 +16,9 @@ void CreateHud(void)
 {
 	player = GetPlayer();
 
-	keyTextures[BLUE_KEY] = GetTexture("key_blue");
-	keyTextures[RED_KEY] = GetTexture("key_red");
-	keyTextures[GREEN_KEY] = GetTexture("key_green");
+	keyTextures[BLUE_KEY] = Graphics_GetTexture("key_blue");
+	keyTextures[RED_KEY] = Graphics_GetTexture("key_red");
+	keyTextures[GREEN_KEY] = Graphics_GetTexture("key_green");
 }
 
 void UpdateHud(void)
@@ -45,18 +45,18 @@ void RenderHud(void)
 	for (i = 0; i < MAX_KEYS; i++)
 	{
 		if (keys[i])
-			BlitTexture(keyTextures[i], keyPos.x + (i * 64), keyPos.y);
+			Graphics_BlitTexture(keyTextures[i], keyPos.x + (i * 64), keyPos.y);
 	}
 
 	char buffer[50];
 	sprintf(buffer, "Ammo: %d", ammo);
-	DrawText(50, 5, buffer, 255, 0, 0);
+	Graphics_DrawText(50, 5, buffer, 255, 0, 0);
 
 	sprintf(buffer, "Health: %d", health);
-	DrawText(480, 5, buffer, 0, 0, 255);
+	Graphics_DrawText(480, 5, buffer, 0, 0, 255);
 
 	sprintf(buffer, "Score: %d", score);
-	DrawText(480, 69, buffer, 0, 0, 255);
+	Graphics_DrawText(480, 69, buffer, 0, 0, 255);
 
 }
 

@@ -9,7 +9,7 @@ void CreateMoney(int x, int y)
 {
 	Entity* money = NewEntity();
 	AddEntity(money);
-	money->texture = GetTexture("money");
+	money->texture = Graphics_GetTexture("money");
 	money->weightless = 1;
 	money->scoreValue = 100;
 	money->onHit = onPickupHit;
@@ -23,7 +23,7 @@ void CreateAmmoPickup(int x, int y)
 {
 	Entity* ammoE = NewEntity();
 	AddEntity(ammoE);
-	ammoE->texture = GetTexture("ammoPickup");
+	ammoE->texture = Graphics_GetTexture("ammoPickup");
 	ammoE->weightless = 1;
 	ammoE->scoreValue = 10;
 	ammoE->tag = TAG_PICKUP;
@@ -37,7 +37,7 @@ void CreateRedKey(int x, int y)
 {
 	Entity* key = NewEntity();
 	AddEntity(key);
-	key->texture = GetTexture("key_red");;
+	key->texture = Graphics_GetTexture("key_red");;
 	key->weightless = 1;
 	key->scoreValue = RED_KEY;
 	key->tag = TAG_PICKUP;
@@ -51,7 +51,7 @@ void CreateBlueKey(int x, int y)
 {
 	Entity* key = NewEntity();
 	AddEntity(key);
-	key->texture = GetTexture("key_blue");
+	key->texture = Graphics_GetTexture("key_blue");
 	key->weightless = 1;
 	key->scoreValue = BLUE_KEY;
 	key->tag = TAG_PICKUP;
@@ -65,7 +65,7 @@ void CreateGreenKey(int x, int y)
 {
 	Entity* key = NewEntity();
 	AddEntity(key);
-	key->texture = GetTexture("key_green");
+	key->texture = Graphics_GetTexture("key_green");
 	key->weightless = 1;
 	key->scoreValue = GREEN_KEY;
 	key->tag = TAG_PICKUP;

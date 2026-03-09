@@ -60,7 +60,7 @@ static void render(void)
 	RenderHud();
 
 	if (isPaused)
-		DrawText(SCREEN_WIDTH / 2-100, SCREEN_HEIGHT / 2, "PAUSED", 255, 255, 255);
+		Graphics_DrawText(SCREEN_WIDTH / 2-100, SCREEN_HEIGHT / 2, "PAUSED", 255, 255, 255);
 }
 
 static void cleanup(void)

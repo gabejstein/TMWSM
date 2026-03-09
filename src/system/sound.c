@@ -1,5 +1,6 @@
 #include "sound.h"
 #include <stdio.h>
+#include <string.h>
 
 static Mix_Chunk* sfxs[SFX_MAX];
 static Mix_Music* music = NULL;

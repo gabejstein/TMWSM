@@ -57,7 +57,7 @@ void CreateSentry(float x, float y)
 	e->update = UpdateEnemy;
 	e->render = RenderEnemy;
 
-	e->texture = GetTexture("sentry");
+	e->texture = Graphics_GetTexture("sentry");
 	e->health = 2;
 
 	Sentry* sentryData = (Sentry*)malloc(sizeof(Sentry));
@@ -82,7 +82,7 @@ void CreateShooter(float x, float y)
 	e->update = UpdateShooter;
 	e->render = RenderEnemy;
 
-	e->texture = GetTexture("shooter");
+	e->texture = Graphics_GetTexture("shooter");
 	e->health = 3;
 
 	Sentry* sentryData = (Sentry*)malloc(sizeof(Sentry));
@@ -104,7 +104,7 @@ void CreateSaw(float x, float y)
 {
 	Entity* e = NewEnemy(x,y);
 	e->update = UpdateSaw;
-	e->texture = GetTexture("saw");
+	e->texture = Graphics_GetTexture("saw");
 	e->health = 4;
 	e->weightless = 1;
 }

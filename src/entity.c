@@ -70,7 +70,7 @@ void RenderEntities(void)
 			}
 			else
 			{
-				BlitTexture(e->texture, e->pos.x-game.camera.x, e->pos.y-game.camera.y);
+				Graphics_BlitTexture(e->texture, e->pos.x-game.camera.x, e->pos.y-game.camera.y);
 			}
 
 			if (game.settings.debug)

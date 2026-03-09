@@ -14,7 +14,7 @@ static void BulletHitsTile(Entity* self);
 
 void InitBullets(void)
 {
-	bulletTexture = GetTexture("bullet");
+	bulletTexture = Graphics_GetTexture("bullet");
 
 	current = 0;
 

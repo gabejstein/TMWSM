@@ -29,13 +29,13 @@ typedef struct AnimatedSprite
 }AnimatedSprite;
 
 void Graphics_SetRenderer(const SDL_Renderer* renderer);
-void InitFont(void);
-void BlitTexture(SDL_Texture* texture, int x, int y);
-void DrawText(int x, int y, char* text, int r, int g, int b);
+void Graphics_InitFont(void);
+void Graphics_BlitTexture(SDL_Texture* texture, int x, int y);
+void Graphics_DrawText(int x, int y, char* text, int r, int g, int b);
 
-void LoadTextures(char* resourcePath);
-SDL_Texture* GetTexture(char* id);
-void FreeAllTextures(void);
+void Graphics_LoadTextures(const char* resourcePath);
+SDL_Texture* Graphics_GetTexture(const char* id);
+void Graphics_FreeAllTextures(void);
 
 void PlayAnimatedSprite(AnimatedSprite* sprite, int x, int y, SDL_RendererFlip flip);
 

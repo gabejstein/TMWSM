@@ -67,7 +67,7 @@ void CreatePlayer(float x, float y)
 
 	AddEntity(player);
 
-	walkAnimation.texture = GetTexture("player_walk");
+	walkAnimation.texture = Graphics_GetTexture("player_walk");
 	walkAnimation.width = 64;
 	walkAnimation.height = 64;
 	walkAnimation.maxFrames = 8;
@@ -142,7 +142,7 @@ static void RenderPlayer(Entity* self)
 	if (isDamageBlink && ((SDL_GetTicks()/100) % 2) == 0)return;
 
 	Vec2 screenPos = { player->pos.x - game.camera.x,player->pos.y - game.camera.y };
-	//BlitTexture(player->texture, screenPos.x, screenPos.y);
+	//Graphics_BlitTexture(player->texture, screenPos.x, screenPos.y);
 	SDL_RendererFlip flip = player->direction == RIGHT ? 0 : 1;
 	if (!player->isGrounded)
 		walkAnimation.speed = 0;

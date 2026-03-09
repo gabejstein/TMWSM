@@ -196,7 +196,7 @@ void PlayCutscene(void)
 	if (command.command == SHOW_IMAGE)
 	{
 		printf("Image ID: %s\n", command.stringParam);
-		imageBox.image = GetTexture(command.stringParam);
+		imageBox.image = Graphics_GetTexture(command.stringParam);
 		imageBox.isVisible = 1;
 	}
 	else if (command.command == WRITE_TEXT)
@@ -237,10 +237,10 @@ void PlayCutscene(void)
 static void RenderCutscene(void)
 {
 	if (imageBox.isVisible)
-		BlitTexture(imageBox.image, imageBox.x, imageBox.y);
+		Graphics_BlitTexture(imageBox.image, imageBox.x, imageBox.y);
 
 	if (textBox.isVisible)
-		DrawText(textBox.x, textBox.y, textBox.text, 255, 255, 255);
+		Graphics_DrawText(textBox.x, textBox.y, textBox.text, 255, 255, 255);
 
 	if (isFadingOut)
 	{
