@@ -2,9 +2,10 @@
 ShowImage "studio_boshi_logo"
 WaitSecs 2
 FadeOut
-WaitSecs 1
-ShowImage "title"
+Clear
 WaitSecs 2
+ShowImage "title"
+WaitSecs 1
 WriteText "Press Start"
 WaitInput
 LoadLevel

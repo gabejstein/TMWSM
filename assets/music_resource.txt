@@ -1,0 +1,2 @@
+dance assets/sounds/bensound-dance.mp3
+long_journey assets/sounds/A_Long_Journey.mp3

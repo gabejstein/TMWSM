@@ -14,3 +14,4 @@ title assets/sprites/title.png
 money assets/sprites/money01.png
 ammoPickup assets/sprites/ammo_pickup.png
 saw assets/sprites/saw_01.png
+dialogue_box assets/sprites/dialogue_box_01.png
