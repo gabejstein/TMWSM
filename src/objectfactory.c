@@ -3,6 +3,10 @@
 #include "entity/sentry.h"
 #include "entity/door.h"
 #include "entity/pickup.h"
+#include "entity/player.h"
+
+#include <stdio.h>
+#include <string.h>
 
 void CreateObject(char* name, float x, float y)
 {

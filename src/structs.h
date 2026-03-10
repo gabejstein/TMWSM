@@ -23,7 +23,6 @@ struct Entity
 	Vec2 vel;
 	int w;
 	int h;
-	int isActive;
 	SDL_Texture* texture;
 	void (*update)(Entity* self);
 	void (*render)(Entity* self);
@@ -32,13 +31,14 @@ struct Entity
 	void (*onTileHit)(Entity* self);
 	void(*data); //For extending members
 	SDL_Rect collider;
-	int isHit;
 	DIRECTION direction;
 	int health;
 	TAG tag;
-	int isGrounded;
-	int isSolid;
-	int weightless;
+	uint8_t isHit : 1;
+	uint8_t isActive : 1;
+	uint8_t isGrounded : 1;
+	uint8_t isSolid : 1;
+	uint8_t weightless : 1;
 	float lastTime;
 	int scoreValue; //how much a powerup/enemy is worth. might separate out.
 };

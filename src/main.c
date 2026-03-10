@@ -145,7 +145,7 @@ static void Update(void)
 	if (waitTime > 0)
 		SDL_Delay(waitTime);
 
-	game.deltaTime = (SDL_GetTicks() - lastFrame) / 1000.0;
+	game.deltaTime = (SDL_GetTicks() - lastFrame) / 1000.0f;
 	lastFrame = SDL_GetTicks();
 
 	if(game.update)
@@ -218,8 +218,7 @@ static void InitLevelQueue(char* path)
 
 	game.levelQueue = (char**)malloc(sizeof(char*) * game.levelCount);
 
-	int i;
-	for (i = 0; i < game.levelCount; i++)
+	for (unsigned int i = 0; i < game.levelCount; i++)
 	{
 		game.levelQueue[i] = (char*)malloc(MAX_FILENAME);
 		fscanf(f, "%s\n", game.levelQueue[i]);
@@ -234,8 +233,7 @@ static void InitLevelQueue(char* path)
 
 static void FreeLevelQueue(void)
 {
-	int i;
-	for (i = 0; i < game.levelCount; i++)
+	for (unsigned int i = 0; i < game.levelCount; i++)
 		free(game.levelQueue[i]);
 	free(game.levelQueue);
 }

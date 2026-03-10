@@ -5,7 +5,7 @@ static void onPickupHit(Entity* self, Entity* other);
 static void onAmmoPickupHit(Entity* self, Entity* other);
 static void onKeyHit(Entity* self, Entity* other);
 
-void CreateMoney(int x, int y)
+void CreateMoney(float x, float y)
 {
 	Entity* money = NewEntity();
 	AddEntity(money);
@@ -19,7 +19,7 @@ void CreateMoney(int x, int y)
 	SDL_QueryTexture(money->texture, NULL, NULL, &money->w, &money->h);
 }
 
-void CreateAmmoPickup(int x, int y)
+void CreateAmmoPickup(float x, float y)
 {
 	Entity* ammoE = NewEntity();
 	AddEntity(ammoE);
@@ -33,7 +33,7 @@ void CreateAmmoPickup(int x, int y)
 	SDL_QueryTexture(ammoE->texture, NULL, NULL, &ammoE->w, &ammoE->h);
 }
 
-void CreateRedKey(int x, int y)
+void CreateRedKey(float x, float y)
 {
 	Entity* key = NewEntity();
 	AddEntity(key);
@@ -47,7 +47,7 @@ void CreateRedKey(int x, int y)
 	SDL_QueryTexture(key->texture, NULL, NULL, &key->w, &key->h);
 }
 
-void CreateBlueKey(int x, int y)
+void CreateBlueKey(float x, float y)
 {
 	Entity* key = NewEntity();
 	AddEntity(key);
@@ -61,7 +61,7 @@ void CreateBlueKey(int x, int y)
 	SDL_QueryTexture(key->texture, NULL, NULL, &key->w, &key->h);
 }
 
-void CreateGreenKey(int x, int y)
+void CreateGreenKey(float x, float y)
 {
 	Entity* key = NewEntity();
 	AddEntity(key);

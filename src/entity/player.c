@@ -1,11 +1,11 @@
 #include "player.h"
 #include <stdio.h>
+#include <string.h>
 #include "../map.h"
 
 static Entity* player;
 static PlayerObject* po; //extension data for player
 static float playerSpeed = 400;
-//static float jumpForce = 650.0;
 static float jumpForce = 750.0;
 
 static void UpdatePlayer(Entity* self);
@@ -30,7 +30,7 @@ static int isDamageBlink;
 void CreatePlayer(float x, float y)
 {
 	player = (Entity*)malloc(sizeof(Entity));
-	memset(player, '0', sizeof(Entity));
+	memset(player, 0, sizeof(Entity));
 	player->pos.x = x;
 	player->pos.y = y;
 	startPos = player->pos;
@@ -132,7 +132,7 @@ static void Cleanup(Entity* self)
 {
 	printf("Freeing Player Object\n");
 	PlayerObject* p = (PlayerObject*) self->data;
-	if(p!=NULL)
+	if(p)
 		free(p);
 }
 

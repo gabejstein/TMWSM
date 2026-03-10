@@ -1,11 +1,11 @@
 #ifndef PICKUP_H
 #define  PICKUP_H
 
-void CreateMoney(int x, int y);
-void CreateAmmoPickup(int x, int y);
-void CreateRedKey(int x, int y);
-void CreateBlueKey(int x, int y);
-void CreateGreenKey(int x, int y);
+void CreateMoney(float x, float y);
+void CreateAmmoPickup(float x, float y);
+void CreateRedKey(float x, float y);
+void CreateBlueKey(float x, float y);
+void CreateGreenKey(float x, float y);
 
 
 #endif
