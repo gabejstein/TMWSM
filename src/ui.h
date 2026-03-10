@@ -1,7 +1,7 @@
 #ifndef UI_H
 #define UI_H
 
-#include "main.h"
+#include "system/graphics.h"
 
 typedef struct
 {

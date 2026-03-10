@@ -7,14 +7,6 @@
 #define FONT_TEXTURE_SIZE 512
 #define FONT_SIZE 50
 
-typedef struct Texture Texture;
-
-struct Texture
-{
-	SDL_Texture* texture;
-	char id[256];
-	Texture* next;
-};
 
 typedef struct AnimatedSprite
 {

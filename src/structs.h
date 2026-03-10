@@ -7,7 +7,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-typedef struct Entity Entity;
 
 typedef struct
 {
@@ -15,6 +14,8 @@ typedef struct
 	float x;
 	float y;
 }TileCollision;
+
+typedef struct Entity Entity;
 
 struct Entity
 {
@@ -53,8 +54,8 @@ typedef struct
 typedef struct
 {
 	Vec2 dest; //point to move to
-	int canSeePlayer;
-	int isDamaged;
+	bool canSeePlayer;
+	bool isDamaged;
 	float lastDamaged;
 	AnimatedSprite walkingAnimation;
 }Sentry;
@@ -83,9 +84,9 @@ typedef struct
 	SDL_Renderer* renderer;
 	float deltaTime;
 	bool isRunning;
-	void (*update)();
-	void (*render)();
-	void (*cleanup)();
+	void (*update)(void);
+	void (*render)(void);
+	void (*cleanup)(void);
 	Vec2 camera;
 	Settings settings;
 	unsigned int levelCount;

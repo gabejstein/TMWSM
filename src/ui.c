@@ -1,7 +1,7 @@
 #include "ui.h"
-#include "system/graphics.h"
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
+#include "main.h"
 
 static void RenderNineSlice(DialogueBox* box);
 

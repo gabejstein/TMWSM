@@ -36,13 +36,12 @@ typedef enum
 	TAG_PICKUP
 }TAG;
 
-#define MAX_KEYS 3
-
 typedef enum
 {
 	BLUE_KEY,
 	RED_KEY,
-	GREEN_KEY
+	GREEN_KEY,
+	MAX_KEYS
 }KEY;
 
 #endif

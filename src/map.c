@@ -6,19 +6,18 @@
 static void RenderTile(int type, int x, int y);
 static void LoadEntities(FILE* f);
 
-Stage* stage;
+static Stage* stage;
 
-SDL_Texture* tileSpriteSet;
+static SDL_Texture* tileSpriteSet;
 
-void LoadMap(char* path)
+void LoadMap(const char* path)
 {
 	stage = (Stage*)malloc(sizeof(Stage));
-	memset(stage, '0', sizeof(Stage));
+	memset(stage, 0, sizeof(Stage));
 
 	FILE* f = fopen(path, "r");
-	if (!f) { printf("Could not load map %s\n", path); exit(1); }
+	if (!f) { printf("Could not load map: %s\n", path); exit(1); }
 
-	
 	//Get Music ID
 	fscanf(f, "%s\n", stage->music);
 	int currLayer = 0; //TODO: Find way to deal with variable number of layers

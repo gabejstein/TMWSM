@@ -6,6 +6,13 @@
 #include <SDL_ttf.h>
 #include "../constants.h"
 
+typedef struct TextureResource
+{
+	SDL_Texture* texture;
+	char id[256];
+	struct TextureResource* next;
+}TextureResource;
+
 //Font-related stuff
 
 static TTF_Font* font;
@@ -14,7 +21,7 @@ static SDL_Rect glyphs[MAX_GLYPHS];
 
 //Texture-related stuff
 //Linked list to hold all textures
-static Texture* textureListHead = NULL;
+static TextureResource* textureListHead = NULL;
 static SDL_Renderer* sRenderer = NULL;
 
 static void AddTexture(char* id, char* path);
@@ -147,8 +154,8 @@ static void AddTexture(char* id, char* path)
 	texture = SDL_CreateTextureFromSurface(sRenderer, surface);
 	SDL_FreeSurface(surface);
 
-	Texture* textureObject = (Texture*)malloc(sizeof(Texture));
-	memset(textureObject, 0, sizeof(Texture));
+	TextureResource* textureObject = (TextureResource*)malloc(sizeof(TextureResource));
+	memset(textureObject, 0, sizeof(TextureResource));
 	strncpy(textureObject->id,id,256);
 	textureObject->texture = texture;
 	textureObject->next = NULL;
@@ -182,7 +189,7 @@ void Graphics_LoadTextures(const char* resourcePath)
 //Pulls textures from repository.
 SDL_Texture* Graphics_GetTexture(const char* id)
 {
-	Texture* current;
+	TextureResource* current;
 	for (current = textureListHead; current != NULL; current = current->next)
 	{
 		if (strcmp(id, current->id) == 0)
@@ -198,8 +205,8 @@ SDL_Texture* Graphics_GetTexture(const char* id)
 void Graphics_FreeAllTextures(void)
 {
 	printf("Freeing texture resources.\n");
-	Texture* current = textureListHead;
-	Texture* temp;
+	TextureResource* current = textureListHead;
+	TextureResource* temp;
 	while (current != NULL)
 	{
 		temp = current;

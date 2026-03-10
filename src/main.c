@@ -77,12 +77,12 @@ static void LoadSettings(char* path)
 			else if (strcmp(buffer, "soundOn") == 0)
 			{
 				game.settings.soundOn = arg;
-				SetSoundMute(game.settings.soundOn);
+				SetSoundMute(!game.settings.soundOn);
 			}
 			else if (strcmp(buffer, "musicOn") == 0)
 			{
 				game.settings.musicOn = arg;
-				SetMusicMute(game.settings.musicOn);
+				SetMusicMute(!game.settings.musicOn);
 			}
 		} while (!feof(f));
 		fclose(f);

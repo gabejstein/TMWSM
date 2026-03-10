@@ -1,7 +1,7 @@
 #ifndef MAP_H
 #define MAP_H
 
-void LoadMap(char* path);
+void LoadMap(const char* path);
 void RenderMap(void);
 void UnloadMap(void);
 
